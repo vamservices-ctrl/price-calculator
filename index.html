@@ -1,62 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VAM Services Calculator</title>
 <style>
 :root{
-  --bg:#f4f6f8; --card:#fff; --black:#111827; --muted:#6b7280;
-  --line:#e5e7eb; --green:#ecfdf5; --blue:#eff6ff;
+--bg:#f4f6f8;--card:#fff;--dark:#111827;--muted:#6b7280;--line:#e5e7eb;--green:#ecfdf5;--blue:#eff6ff;--red:#fee2e2;
 }
 body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#111827;padding:18px}
-.container{max-width:1200px;margin:auto}
-.header{background:#111;color:#fff;padding:24px;border-radius:18px;margin-bottom:18px}
+.container{max-width:1250px;margin:auto}
+.header{background:#111;color:white;padding:24px;border-radius:18px;margin-bottom:18px}
 .header h1{margin:0;font-size:30px}
 .header p{margin:8px 0 0;color:#cbd5e1}
-.card{background:var(--card);border-radius:16px;margin-bottom:14px;box-shadow:0 3px 14px rgba(0,0,0,.08);overflow:hidden}
+.card{background:white;border-radius:16px;margin-bottom:14px;box-shadow:0 3px 14px rgba(0,0,0,.08);overflow:hidden}
 .title{padding:18px 20px;font-size:21px;font-weight:700;display:flex;justify-content:space-between;cursor:pointer}
 .content{display:none;padding:0 18px 18px}
 .row{display:grid;grid-template-columns:2.3fr .75fr .65fr .85fr .85fr .85fr 1fr 1fr;gap:8px;align-items:center;border-top:1px solid var(--line);padding:10px 0}
 .head{font-size:12px;font-weight:700;color:#4b5563;text-transform:uppercase}
 .item-title{font-weight:700}
 .item-ru{font-size:12px;color:var(--muted);margin-top:3px}
-input,select{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px;font-size:14px;background:#fff}
+input,select{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px;font-size:14px;background:white}
 .price{font-size:13px;color:#374151}
 .sum{font-weight:700}
 .total{background:var(--green);border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-top:14px;font-size:22px;font-weight:800}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
-.badge{display:inline-block;background:var(--blue);padding:4px 8px;border-radius:999px;font-size:12px;color:#1d4ed8;margin-top:6px}
+.reset{background:#111;color:white;border:0;border-radius:10px;padding:10px 14px;margin:10px 0;cursor:pointer}
 @media(max-width:850px){
-  .row{grid-template-columns:1fr 1fr}
-  .head{display:none}
+.row{grid-template-columns:1fr 1fr}
+.head{display:none}
 }
 </style>
 </head>
 <body>
 <div class="container">
-
 <div class="header">
-  <h1>VAM Services Price Calculator</h1>
-  <p>Internal estimating tool. Preliminary pricing only.</p>
+<h1>VAM Services Price Calculator</h1>
+<p>Internal estimating tool. Preliminary pricing only.</p>
 </div>
-
 <div id="app"></div>
-
 </div>
 
 <script>
-const sections = [
+const sections=[
 {
-id:"painting",
-title:"🎨 Painting",
-type:"table",
+id:"painting",title:"🎨 Painting",type:"painting",
 items:[
-["Interior Painting - Walls & Ceilings","Покраска дома: стены + потолки","SF",2.50,3.25,4.00],
-["Interior Painting - Walls Only","Покраска дома: только стены","SF",1.75,2.375,3.00],
-["Interior Painting - Ceilings Only","Покраска дома: только потолки","SF",0.75,0.875,1.00],
-["Extra Coat / Primer","3-й слой / праймер","SF",0.75,1.00,1.50],
-["Interior Door Painting","Покраска двери","Each",120,135,150],
+["Interior Painting - Walls & Ceilings","Покраска дома: стены + потолки","SF",2.50,3.00,4.00],
+["Interior Painting - Walls Only","Покраска дома: только стены","SF",1.50,2.00,3.00],
+["Interior Painting - Ceilings Only","Покраска дома: только потолки","SF",1.00,1.50,2.00],
+["Extra Coat / Primer","3-й слой / праймер","SF",0.75,1.00,2.00],
+["Interior Door Painting","Покраска двери","Each",100,120,150],
 ["Door Frame Painting","Покраска дверной коробки","Each",40,60,100],
 ["Window Sill Painting","Покраска подоконника","Each",25,30,50],
 ["Window Sill Repair + Painting","Ремонт + покраска подоконника","Each",50,85,125],
@@ -64,20 +58,10 @@ items:[
 ["Shelf Repair + Painting","Ремонт + покраска полки","Each",50,85,125]
 ]
 },
+{id:"exterior",title:"🏠 Exterior Painting",type:"exterior"},
+{id:"cabinets",title:"🍽 Cabinet Painting",type:"cabinets"},
 {
-id:"exterior",
-title:"🏠 Exterior Painting",
-type:"exterior"
-},
-{
-id:"cabinets",
-title:"🍽 Cabinet Painting",
-type:"cabinets"
-},
-{
-id:"drywall",
-title:"🧱 Drywall",
-type:"drywall",
+id:"drywall",title:"🧱 Drywall",type:"drywall",
 items:[
 ["Small Drywall Repair","Небольшой ремонт отверстия","Each",150,200,300],
 ["Medium Drywall Repair up to 2×2 ft","Средний ремонт до 2×2 ft","Each",250,400,600],
@@ -88,10 +72,7 @@ items:[
 ]
 },
 {
-id:"flooring",
-title:"🪵 Flooring",
-type:"table",
-minimum:350,
+id:"flooring",title:"🪵 Flooring",type:"table",minimum:350,
 items:[
 ["LVP Installation","Укладка LVP / винила","SF",2,2.75,3.5],
 ["Laminate Installation","Укладка ламината","SF",2.5,3.25,4],
@@ -103,16 +84,16 @@ items:[
 ["LVP / Laminate Removal","Демонтаж LVP / ламината","SF",0.75,1,1.25],
 ["Glued Engineered Hardwood Removal","Демонтаж приклеенной инженерной доски","SF",3,4.25,6],
 ["Floor Leveling - Small Area","Выравнивание пола, маленький участок","Each",200,350,500],
-["Floor Leveling - Medium Area","Выравнивание пола, средний участок","Each",500,1000,1500]
+["Floor Leveling - Medium Area","Выравнивание пола, средний участок","Each",500,1000,1500],
+["Quarter Round Installation","Установка quarter round","LF",1,1.5,2],
+["Transition Strip Installation","Установка переходного порожка","Each",40,50,80]
 ]
 },
 {
-id:"doors",
-title:"🚪 Doors & Trim",
-type:"table",
+id:"doors",title:"🚪 Doors & Trim",type:"table",
 items:[
-["Interior Door Replacement","Замена межкомнатной двери","Each",150,200,275],
-["Prehung Door Installation","Установка двери с коробкой","Each",150,200,275],
+["Interior Door Replacement","Замена межкомнатной двери","Each",75,120,160],
+["Prehung Door Installation","Установка двери с коробкой","Each",100,150,200],
 ["Entry Door Installation","Установка входной двери","Each",400,700,1000],
 ["Baseboard Installation","Установка плинтуса","LF",1.5,2.25,3],
 ["Baseboard Installation + Painting","Установка + покраска плинтуса","LF",4,5,6],
@@ -123,41 +104,37 @@ items:[
 ]
 },
 {
-id:"handyman",
-title:"🔧 Handyman",
-type:"table",
+id:"handyman",title:"🔧 Handyman",type:"table",
 items:[
-["TV Mount","Установка телевизора","Each",100,200,400],
+["TV Mount","Установка телевизора","Each",150,200,400],
 ["Wire Concealment","Скрытие проводов","Each",50,125,200],
-["Wall Shelves","Настенные полки","Project",75,200,500],
+["Wall Shelves","Настенные полки","Project",40,80,150],
 ["Mirror Installation","Монтаж зеркала","Each",75,175,350],
-["Picture / Decor Installation","Монтаж картин / декора","Each",50,125,250],
-["Ceiling Fan Installation","Потолочный вентилятор","Each",125,225,450],
-["Standard Chandelier","Люстра стандартная","Each",150,325,800],
-["High Ceiling Chandelier 18–20 ft","Люстра 18–20 ft","Each",300,650,2000],
-["Light Fixture Replacement","Замена светильника","Each",100,175,300],
-["Outlet Replacement","Замена розетки","Each",75,125,200],
-["Switch Replacement","Замена выключателя","Each",75,125,200],
-["GFCI Outlet Replacement","Замена GFCI розетки","Each",100,175,300],
-["Dimmer Switch Replacement","Замена диммера","Each",100,175,300],
-["Faucet Replacement","Замена смесителя","Each",125,225,400],
+["Picture / Decor Installation","Монтаж картин / декора","Each",25,40,100],
+["Ceiling Fan Installation","Потолочный вентилятор","Each",125,175,250],
+["Standard Chandelier","Люстра стандартная","Each",100,150,250],
+["High Ceiling Chandelier 18–20 ft","Люстра 18–20 ft","Each",300,450,800],
+["Light Fixture Replacement","Замена светильника","Each",80,120,200],
+["Outlet Replacement","Замена розетки","Each",25,40,60],
+["Switch Replacement","Замена выключателя","Each",25,40,60],
+["GFCI Outlet Replacement","Замена GFCI розетки","Each",50,75,100],
+["Dimmer Switch Replacement","Замена диммера","Each",50,75,100],
+["Faucet Replacement","Замена смесителя","Each",125,150,250],
 ["Kitchen Faucet Replacement","Замена кухонного смесителя","Each",150,250,450],
-["Toilet Replacement","Замена унитаза","Each",175,300,500],
-["Garbage Disposal Replacement","Замена измельчителя мусора","Each",175,300,500],
+["Toilet Replacement","Замена унитаза","Each",150,200,350],
+["Garbage Disposal Replacement","Замена измельчителя мусора","Each",150,200,300],
 ["P-Trap Replacement","Замена сифона","Each",100,175,300],
 ["Bidet Installation","Установка биде","Each",100,175,300],
 ["Shower Head Replacement","Замена душевой лейки","Each",75,125,200],
 ["Bathtub Caulking","Герметизация ванны","Each",125,225,400],
 ["Shower Caulking","Герметизация душевой","Each",150,275,500],
-["Blinds Installation","Установка жалюзи","Window",50,85,150],
+["Blinds Installation","Установка жалюзи","Window",40,50,100],
 ["Curtain Rod Installation","Установка карниза","Window",75,125,250],
 ["Window Caulking","Герметизация окна","Window",75,150,300]
 ]
 },
 {
-id:"fence",
-title:"🏡 Fence",
-type:"table",
+id:"fence",title:"🏡 Fence",type:"table",
 items:[
 ["Wood Privacy Fence - 6 ft","Деревянный забор 6 ft","LF",35,50,70],
 ["Steel Posts Add-on","Доплата за железные столбы","LF",5,10,12],
@@ -171,9 +148,7 @@ items:[
 ]
 },
 {
-id:"deck",
-title:"🏡 Deck & Pergola",
-type:"table",
+id:"deck",title:"🏡 Deck & Pergola",type:"table",
 items:[
 ["New Wood Deck","Новый деревянный deck","SF",35,50,70],
 ["New Composite Deck","Новый composite deck","SF",55,70,100],
@@ -187,345 +162,194 @@ items:[
 }
 ];
 
-function money(n){return "$"+Math.round(n).toLocaleString();}
-function priceByLevel(level, low, working, high){
-  if(level==="low") return low;
-  if(level==="high") return high;
-  return working;
+function money(n){return "$"+Number(n).toLocaleString(undefined,{maximumFractionDigits:0});}
+function price(n){return "$"+Number(n).toLocaleString(undefined,{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});}
+function val(level,low,work,high){return level==="low"?low:level==="high"?high:work;}
+function toggle(id){let el=document.getElementById(id);el.style.display=el.style.display==="block"?"none":"block";}
+
+function render(){
+let app=document.getElementById("app");app.innerHTML="";
+sections.forEach(sec=>{
+app.innerHTML+=`<div class="card"><div class="title" onclick="toggle('${sec.id}')">${sec.title}<span>+</span></div><div id="${sec.id}" class="content">${section(sec)}</div></div>`;
+});
+attachDrywall();
 }
-function toggle(id){
-  const el=document.getElementById(id);
-  el.style.display=el.style.display==="block"?"none":"block";
+function section(sec){
+if(sec.type==="exterior")return exterior();
+if(sec.type==="cabinets")return cabinets();
+let html=`<button class="reset" onclick="resetSection('${sec.id}')">Reset This Section</button>
+<div class="row head"><div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div></div>`;
+sec.items.forEach((r,i)=>{
+html+=row(sec.id,i,r);
+});
+html+=`<div class="total" id="${sec.id}_total">Grand Total: $0</div>
+<div class="note">Preliminary estimate only. Final price depends on photos, access, materials, and site conditions.</div>`;
+if(sec.id==="flooring")html+=`<div class="note"><b>Assistant note:</b> Ask if client wants baseboards, quarter round, and how many transition strips are needed.</div>`;
+return html;
 }
-
-function renderApp(){
-  const app=document.getElementById("app");
-  app.innerHTML="";
-  sections.forEach(sec=>{
-    app.innerHTML+=`
-    <div class="card">
-      <div class="title" onclick="toggle('${sec.id}')">${sec.title}<span>+</span></div>
-      <div id="${sec.id}" class="content">${renderSection(sec)}</div>
-    </div>`;
-  });
+function row(id,i,r){
+return `<div class="row">
+<div><div class="item-title">${r[0]}</div><div class="item-ru">${r[1]}</div></div>
+<div><input type="number" id="${id}_${i}_qty" value="0" min="0" step="0.01" oninput="calc('${id}')"></div>
+<div class="price">${r[2]}</div>
+<div class="price">${price(r[3])}</div>
+<div class="price">${price(r[4])}</div>
+<div class="price">${price(r[5])}</div>
+<div><select id="${id}_${i}_level" onchange="calc('${id}')"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="${id}_${i}_sum">$0</div>
+</div>`;
 }
-
-function renderSection(sec){
-  if(sec.type==="exterior") return renderExterior(sec.id);
-  if(sec.type==="cabinets") return renderCabinets(sec.id);
-
-  let html=`
-  <div class="row head">
-    <div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div>
-  </div>`;
-  sec.items.forEach((r,i)=>{
-    html+=`
-    <div class="row">
-      <div><div class="item-title">${r[0]}</div><div class="item-ru">${r[1]}</div></div>
-      <div><input type="number" id="${sec.id}_${i}_qty" value="0" min="0" step="0.01" oninput="calcTable('${sec.id}')"></div>
-      <div class="price">${r[2]}</div>
-      <div class="price">${money(r[3])}</div>
-      <div class="price">${money(r[4])}</div>
-      <div class="price">${money(r[5])}</div>
-      <div><select id="${sec.id}_${i}_level" onchange="calcTable('${sec.id}')">
-        <option value="working">Working</option>
-        <option value="low">Low</option>
-        <option value="high">High</option>
-      </select></div>
-      <div class="sum" id="${sec.id}_${i}_sum">$0</div>
-    </div>`;
-  });
-  html+=`<div class="total" id="${sec.id}_total">Grand Total: $0</div>
-  <div class="note">Preliminary estimate only. Final price depends on photos, access, materials, and site conditions.</div>`;
-  return html;
+function calc(id){
+let sec=sections.find(s=>s.id===id),total=0;
+sec.items.forEach((r,i)=>{
+let qty=+document.getElementById(`${id}_${i}_qty`).value||0;
+let level=document.getElementById(`${id}_${i}_level`).value;
+let line=qty*val(level,r[3],r[4],r[5]);
+document.getElementById(`${id}_${i}_sum`).innerText=money(line);
+total+=line;
+});
+if(sec.minimum&&total>0&&total<sec.minimum)total=sec.minimum;
+if(id==="drywall"&&total>0&&total<200)total=200;
+if(id==="deck"&&total>0&&total<250)total=250;
+document.getElementById(`${id}_total`).innerText="Grand Total: "+money(total);
 }
-
-function calcTable(secId){
-  const sec=sections.find(s=>s.id===secId);
-  let total=0;
-
-  sec.items.forEach((r,i)=>{
-    let qty=parseFloat(document.getElementById(`${secId}_${i}_qty`).value)||0;
-    let lvl=document.getElementById(`${secId}_${i}_level`).value;
-    let price=priceByLevel(lvl,r[3],r[4],r[5]);
-    let line=qty*price;
-    document.getElementById(`${secId}_${i}_sum`).innerText=money(line);
-    total+=line;
-  });
-
-  if(sec.minimum && total>0 && total<sec.minimum) total=sec.minimum;
-  if(secId==="drywall" && total>0 && total<200) total=200;
-  if(secId==="deck" && total>0 && total<250) total=250;
-
-  document.getElementById(`${secId}_total`).innerText="Grand Total: "+money(total);
+function resetSection(id){
+document.querySelectorAll(`#${id} input`).forEach(x=>x.value=0);
+document.querySelectorAll(`#${id} select`).forEach(x=>x.value="working");
+if(id==="exterior")calcExterior();
+else if(id==="cabinets")calcCabinets();
+else if(id==="drywall")calcDrywall();
+else calc(id);
 }
 
-function drywallDiscount(qty){
-  if(qty>=10) return 0.75;
-  if(qty>=6) return 0.80;
-  if(qty>=3) return 0.90;
-  return 1;
+/* Painting custom modifier */
+function calcPainting(){
+calc("painting");
 }
 
-/* override drywall calculation with volume discount */
+/* Drywall volume discount */
+function drywallDiscount(qty){if(qty>=10)return .75;if(qty>=6)return .80;if(qty>=3)return .90;return 1;}
+function attachDrywall(){
+let sec=sections.find(s=>s.id==="drywall");
+sec.items.forEach((r,i)=>{
+document.getElementById(`drywall_${i}_qty`).setAttribute("oninput","calcDrywall()");
+document.getElementById(`drywall_${i}_level`).setAttribute("onchange","calcDrywall()");
+});
+}
 function calcDrywall(){
-  const secId="drywall";
-  const sec=sections.find(s=>s.id===secId);
-  let total=0;
-
-  sec.items.forEach((r,i)=>{
-    let qty=parseFloat(document.getElementById(`${secId}_${i}_qty`).value)||0;
-    let lvl=document.getElementById(`${secId}_${i}_level`).value;
-    let price=priceByLevel(lvl,r[3],r[4],r[5]);
-
-    if(i===0 || i===1 || i===2) price*=drywallDiscount(qty);
-
-    let line=qty*price;
-    document.getElementById(`${secId}_${i}_sum`).innerText=money(line);
-    total+=line;
-  });
-
-  if(total>0 && total<200) total=200;
-  document.getElementById(`${secId}_total`).innerText="Grand Total: "+money(total);
+let sec=sections.find(s=>s.id==="drywall"),total=0;
+sec.items.forEach((r,i)=>{
+let qty=+document.getElementById(`drywall_${i}_qty`).value||0;
+let level=document.getElementById(`drywall_${i}_level`).value;
+let p=val(level,r[3],r[4],r[5]);
+if(i===0||i===1||i===2)p*=drywallDiscount(qty);
+let line=qty*p;
+document.getElementById(`drywall_${i}_sum`).innerText=money(line);
+total+=line;
+});
+if(total>0&&total<200)total=200;
+document.getElementById("drywall_total").innerText="Grand Total: "+money(total);
 }
 
-/* replace drywall event after render */
-function attachDrywallEvents(){
-  const sec=sections.find(s=>s.id==="drywall");
-  sec.items.forEach((r,i)=>{
-    document.getElementById(`drywall_${i}_qty`).setAttribute("oninput","calcDrywall()");
-    document.getElementById(`drywall_${i}_level`).setAttribute("onchange","calcDrywall()");
-  });
-}
-
-function renderCabinets(id){
-return `
-<div class="row head">
-  <div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div>
-</div>
-
-${cabRow(id,0,"Cabinet Doors","Дверцы шкафов","Each",60,90,135)}
-${cabRow(id,1,"Drawers","Ящики","Each",50,70,110)}
-
-<div class="row">
-  <div><div class="item-title">Cabinet Frames</div><div class="item-ru">Фреймы шкафов, процент от дверей + ящиков</div></div>
-  <div><input type="number" id="cab_frame_qty" value="1" min="0" step="1" oninput="calcCabinets()"></div>
-  <div class="price">%</div>
-  <div class="price">25%</div><div class="price">30%</div><div class="price">40%</div>
-  <div><select id="cab_frame_level" onchange="calcCabinets()">
-    <option value="working">Working</option><option value="low">Low</option><option value="high">High</option>
-  </select></div>
-  <div class="sum" id="cab_frame_sum">$0</div>
-</div>
-
-<div class="row">
-  <div><div class="item-title">Sanding Add-on</div><div class="item-ru">Шлифовка шкафов</div></div>
-  <div><input type="number" id="cab_sand_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div>
-  <div class="price">%</div>
-  <div class="price">10%</div><div class="price">15%</div><div class="price">25%</div>
-  <div><select id="cab_sand_level" onchange="calcCabinets()">
-    <option value="working">Working</option><option value="low">Low</option><option value="high">High</option>
-  </select></div>
-  <div class="sum" id="cab_sand_sum">$0</div>
-</div>
-
-<div class="row">
-  <div><div class="item-title">Caulking / Sealing Add-on</div><div class="item-ru">Герметик / caulking</div></div>
-  <div><input type="number" id="cab_caulking_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div>
-  <div class="price">%</div>
-  <div class="price">5%</div><div class="price">10%</div><div class="price">15%</div>
-  <div><select id="cab_caulking_level" onchange="calcCabinets()">
-    <option value="working">Working</option><option value="low">Low</option><option value="high">High</option>
-  </select></div>
-  <div class="sum" id="cab_caulking_sum">$0</div>
-</div>
-
-<div class="row">
-  <div><div class="item-title">Cabinet / Drawer Repair</div><div class="item-ru">Ремонт фасадов / ящиков / шпаклевка</div></div>
-  <div><input type="number" id="cab_repair_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div>
-  <div class="price">Each</div>
-  <div class="price">$25</div><div class="price">$50</div><div class="price">$100</div>
-  <div><select id="cab_repair_level" onchange="calcCabinets()">
-    <option value="working">Working</option><option value="low">Low</option><option value="high">High</option>
-  </select></div>
-  <div class="sum" id="cab_repair_sum">$0</div>
-</div>
-
-<div class="total" id="cabinets_total">Grand Total: $0</div>
-<div class="note">Frames, sanding, and caulking are calculated from cabinet doors + drawers subtotal. Minimum cabinet project: $1,500.</div>
-`;
-}
-
-function cabRow(id,i,en,ru,unit,low,working,high){
-return `
-<div class="row">
-  <div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
-  <div><input type="number" id="cab_${i}_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div>
-  <div class="price">${unit}</div>
-  <div class="price">${money(low)}</div><div class="price">${money(working)}</div><div class="price">${money(high)}</div>
-  <div><select id="cab_${i}_level" onchange="calcCabinets()">
-    <option value="working">Working</option><option value="low">Low</option><option value="high">High</option>
-  </select></div>
-  <div class="sum" id="cab_${i}_sum">$0</div>
-</div>`;
-}
-
-function calcCabinets(){
-  let base=0;
-
-  const rows=[
-    {i:0,low:60,working:90,high:135},
-    {i:1,low:50,working:70,high:110}
-  ];
-
-  rows.forEach(r=>{
-    let qty=+document.getElementById(`cab_${r.i}_qty`).value||0;
-    let lvl=document.getElementById(`cab_${r.i}_level`).value;
-    let price=priceByLevel(lvl,r.low,r.working,r.high);
-    let line=qty*price;
-    document.getElementById(`cab_${r.i}_sum`).innerText=money(line);
-    base+=line;
-  });
-
-  let frameLvl=document.getElementById("cab_frame_level").value;
-  let frameQty=+document.getElementById("cab_frame_qty").value||0;
-  let framePct=priceByLevel(frameLvl,.25,.30,.40);
-  let frameTotal=frameQty>0 ? base*framePct : 0;
-  document.getElementById("cab_frame_sum").innerText=money(frameTotal);
-
-  let sandLvl=document.getElementById("cab_sand_level").value;
-  let sandQty=+document.getElementById("cab_sand_qty").value||0;
-  let sandPct=priceByLevel(sandLvl,.10,.15,.25);
-  let sandTotal=sandQty>0 ? base*sandPct : 0;
-  document.getElementById("cab_sand_sum").innerText=money(sandTotal);
-
-  let caulkLvl=document.getElementById("cab_caulking_level").value;
-  let caulkQty=+document.getElementById("cab_caulking_qty").value||0;
-  let caulkPct=priceByLevel(caulkLvl,.05,.10,.15);
-  let caulkTotal=caulkQty>0 ? base*caulkPct : 0;
-  document.getElementById("cab_caulking_sum").innerText=money(caulkTotal);
-
-  let repairQty=+document.getElementById("cab_repair_qty").value||0;
-  let repairLvl=document.getElementById("cab_repair_level").value;
-  let repairPrice=priceByLevel(repairLvl,25,50,100);
-  let repairTotal=repairQty*repairPrice;
-  document.getElementById("cab_repair_sum").innerText=money(repairTotal);
-
-  let total=base+frameTotal+sandTotal+caulkTotal+repairTotal;
-  if(total>0 && total<1500) total=1500;
-
-  document.getElementById("cabinets_total").innerText="Grand Total: "+money(total);
-}
-
-function renderExterior(id){
-return `
-<div class="row head">
-  <div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div>
-</div>
-
-${extBaseRow("Partial Brick / Partial Siding House","Дом частично кирпич / частично сайдинг","Project",2500,4000,6000,"partial")}
-${extBaseRow("Full Siding House","Дом полностью из сайдинга","Project",3500,5000,7000,"siding")}
-
-<div class="row">
-  <div><div class="item-title">Two-Story Add-on</div><div class="item-ru">Доплата за второй этаж</div></div>
-  <div><input type="number" id="ext_twostory_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
-  <div class="price">%</div>
-  <div class="price">15%</div><div class="price">20%</div><div class="price">30%</div>
-  <div><select id="ext_twostory_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
-  <div class="sum" id="ext_twostory_sum">$0</div>
-</div>
-
-<div class="row">
-  <div><div class="item-title">Second Color Add-on</div><div class="item-ru">Доплата за второй цвет / trim color</div></div>
-  <div><input type="number" id="ext_color_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
-  <div class="price">%</div>
-  <div class="price">15%</div><div class="price">20%</div><div class="price">30%</div>
-  <div><select id="ext_color_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
-  <div class="sum" id="ext_color_sum">$0</div>
-</div>
-
-<div class="row">
-  <div><div class="item-title">Brick Painting Add-on</div><div class="item-ru">Доплата за покраску кирпича</div></div>
-  <div><input type="number" id="ext_brick_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
-  <div class="price">%</div>
-  <div class="price">20%</div><div class="price">35%</div><div class="price">50%</div>
-  <div><select id="ext_brick_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
-  <div class="sum" id="ext_brick_sum">$0</div>
-</div>
-
-${extFixedRow("Foundation Painting","Покраска фундамента","Project",300,600,1200,"foundation")}
-${extFixedRow("Downspout Painting","Покраска сливной трубы","Each",80,120,150,"downspout")}
-
+/* Exterior */
+function exterior(){
+return `<button class="reset" onclick="resetSection('exterior')">Reset This Section</button>
+<div class="row head"><div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div></div>
+${extRow("Partial Brick / Partial Siding House","Дом частично кирпич / частично сайдинг","Project",2500,4000,6000,"partial")}
+${extRow("Full Siding House","Дом полностью из сайдинга","Project",3500,5000,7000,"siding")}
+${extPct("Two-Story Add-on","Доплата за второй этаж",15,20,30,"twostory")}
+${extPct("Second Color Add-on","Доплата за второй цвет / trim color",15,20,30,"color")}
+${extPct("Brick Painting Add-on","Доплата за покраску кирпича",20,35,50,"brick")}
+${extRow("Foundation Painting","Покраска фундамента","Project",300,600,1200,"foundation")}
+${extRow("Downspout Painting","Покраска сливной трубы","Each",80,120,150,"downspout")}
+${extRow("Exterior Repair Area","Ремонт наружного участка","Each Repair Area",100,150,250,"repair")}
 <div class="total" id="exterior_total">Grand Total: $0</div>
-<div class="note">Pressure washing is included in exterior painting base price. Gutters are included with trim color unless specified separately.</div>
-`;
+<div class="note">Pressure washing is included in exterior painting base price. Gutters are included with trim unless specified separately.</div>`;
 }
-
-function extBaseRow(en,ru,unit,low,working,high,key){
-return `
-<div class="row">
-  <div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
-  <div><input type="number" id="ext_${key}_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
-  <div class="price">${unit}</div>
-  <div class="price">${money(low)}</div><div class="price">${money(working)}</div><div class="price">${money(high)}</div>
-  <div><select id="ext_${key}_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
-  <div class="sum" id="ext_${key}_sum">$0</div>
-</div>`;
+function extRow(en,ru,unit,low,work,high,key){
+return `<div class="row"><div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
+<div><input type="number" id="ext_${key}_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
+<div class="price">${unit}</div><div class="price">${price(low)}</div><div class="price">${price(work)}</div><div class="price">${price(high)}</div>
+<div><select id="ext_${key}_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="ext_${key}_sum">$0</div></div>`;
 }
-
-function extFixedRow(en,ru,unit,low,working,high,key){
-return extBaseRow(en,ru,unit,low,working,high,key);
+function extPct(en,ru,low,work,high,key){
+return `<div class="row"><div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
+<div><input type="number" id="ext_${key}_qty" value="0" min="0" step="1" oninput="calcExterior()"></div>
+<div class="price">%</div><div class="price">${low}%</div><div class="price">${work}%</div><div class="price">${high}%</div>
+<div><select id="ext_${key}_level" onchange="calcExterior()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="ext_${key}_sum">$0</div></div>`;
 }
-
 function calcExterior(){
-  let base=0;
-
-  [
-    ["partial",2500,4000,6000],
-    ["siding",3500,5000,7000]
-  ].forEach(r=>{
-    let qty=+document.getElementById(`ext_${r[0]}_qty`).value||0;
-    let lvl=document.getElementById(`ext_${r[0]}_level`).value;
-    let price=priceByLevel(lvl,r[1],r[2],r[3]);
-    let line=qty*price;
-    document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);
-    base+=line;
-  });
-
-  const pctRows=[
-    ["twostory",.15,.20,.30],
-    ["color",.15,.20,.30],
-    ["brick",.20,.35,.50]
-  ];
-
-  let total=base;
-
-  pctRows.forEach(r=>{
-    let qty=+document.getElementById(`ext_${r[0]}_qty`).value||0;
-    let lvl=document.getElementById(`ext_${r[0]}_level`).value;
-    let pct=priceByLevel(lvl,r[1],r[2],r[3]);
-    let line=qty>0 ? base*pct : 0;
-    document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);
-    total+=line;
-  });
-
-  [
-    ["foundation",300,600,1200],
-    ["downspout",80,120,150]
-  ].forEach(r=>{
-    let qty=+document.getElementById(`ext_${r[0]}_qty`).value||0;
-    let lvl=document.getElementById(`ext_${r[0]}_level`).value;
-    let price=priceByLevel(lvl,r[1],r[2],r[3]);
-    let line=qty*price;
-    document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);
-    total+=line;
-  });
-
-  document.getElementById("exterior_total").innerText="Grand Total: "+money(total);
+let base=0,total=0;
+[["partial",2500,4000,6000],["siding",3500,5000,7000]].forEach(r=>{
+let q=+document.getElementById(`ext_${r[0]}_qty`).value||0,l=document.getElementById(`ext_${r[0]}_level`).value,line=q*val(l,r[1],r[2],r[3]);
+document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);base+=line;
+});
+total=base;
+[["twostory",.15,.20,.30],["color",.15,.20,.30],["brick",.20,.35,.50]].forEach(r=>{
+let q=+document.getElementById(`ext_${r[0]}_qty`).value||0,l=document.getElementById(`ext_${r[0]}_level`).value,line=q>0?base*val(l,r[1],r[2],r[3]):0;
+document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);total+=line;
+});
+[["foundation",300,600,1200],["downspout",80,120,150],["repair",100,150,250]].forEach(r=>{
+let q=+document.getElementById(`ext_${r[0]}_qty`).value||0,l=document.getElementById(`ext_${r[0]}_level`).value,line=q*val(l,r[1],r[2],r[3]);
+document.getElementById(`ext_${r[0]}_sum`).innerText=money(line);total+=line;
+});
+document.getElementById("exterior_total").innerText="Grand Total: "+money(total);
 }
 
-renderApp();
-attachDrywallEvents();
+/* Cabinets */
+function cabinets(){
+return `<button class="reset" onclick="resetSection('cabinets')">Reset This Section</button>
+<div class="row head"><div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Total</div></div>
+${cabRow(0,"Cabinet Doors","Дверцы шкафов","Each",60,90,135)}
+${cabRow(1,"Drawers","Ящики","Each",50,70,110)}
+${cabPct("Cabinet Frames","Фреймы шкафов, процент от дверей + ящиков",25,30,40,"frame")}
+${cabPct("Sanding Add-on","Шлифовка шкафов",10,15,25,"sand")}
+${cabPct("Caulking / Sealing Add-on","Герметик / caulking",5,10,15,"caulk")}
+${cabFixed("Cabinet / Drawer Repair","Ремонт фасадов / ящиков / шпаклевка","Each",25,50,100,"repair")}
+<div class="total" id="cabinets_total">Grand Total: $0</div>
+<div class="note">Frames, sanding, and caulking are calculated from cabinet doors + drawers subtotal. Minimum cabinet project: $1,500.</div>`;
+}
+function cabRow(i,en,ru,unit,low,work,high){
+return `<div class="row"><div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
+<div><input type="number" id="cab_${i}_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div><div class="price">${unit}</div>
+<div class="price">${price(low)}</div><div class="price">${price(work)}</div><div class="price">${price(high)}</div>
+<div><select id="cab_${i}_level" onchange="calcCabinets()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="cab_${i}_sum">$0</div></div>`;
+}
+function cabPct(en,ru,low,work,high,key){
+return `<div class="row"><div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
+<div><input type="number" id="cab_${key}_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div><div class="price">%</div>
+<div class="price">${low}%</div><div class="price">${work}%</div><div class="price">${high}%</div>
+<div><select id="cab_${key}_level" onchange="calcCabinets()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="cab_${key}_sum">$0</div></div>`;
+}
+function cabFixed(en,ru,unit,low,work,high,key){
+return `<div class="row"><div><div class="item-title">${en}</div><div class="item-ru">${ru}</div></div>
+<div><input type="number" id="cab_${key}_qty" value="0" min="0" step="1" oninput="calcCabinets()"></div><div class="price">${unit}</div>
+<div class="price">${price(low)}</div><div class="price">${price(work)}</div><div class="price">${price(high)}</div>
+<div><select id="cab_${key}_level" onchange="calcCabinets()"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div>
+<div class="sum" id="cab_${key}_sum">$0</div></div>`;
+}
+function calcCabinets(){
+let base=0;
+[[0,60,90,135],[1,50,70,110]].forEach(r=>{
+let q=+document.getElementById(`cab_${r[0]}_qty`).value||0,l=document.getElementById(`cab_${r[0]}_level`).value,line=q*val(l,r[1],r[2],r[3]);
+document.getElementById(`cab_${r[0]}_sum`).innerText=money(line);base+=line;
+});
+let total=base;
+[["frame",.25,.30,.40],["sand",.10,.15,.25],["caulk",.05,.10,.15]].forEach(r=>{
+let q=+document.getElementById(`cab_${r[0]}_qty`).value||0,l=document.getElementById(`cab_${r[0]}_level`).value,line=q>0?base*val(l,r[1],r[2],r[3]):0;
+document.getElementById(`cab_${r[0]}_sum`).innerText=money(line);total+=line;
+});
+let rq=+document.getElementById("cab_repair_qty").value||0,rl=document.getElementById("cab_repair_level").value,rt=rq*val(rl,25,50,100);
+document.getElementById("cab_repair_sum").innerText=money(rt);total+=rt;
+if(total>0&&total<1500)total=1500;
+document.getElementById("cabinets_total").innerText="Grand Total: "+money(total);
+}
+
+render();
 </script>
 </body>
 </html>
