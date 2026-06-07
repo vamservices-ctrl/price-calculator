@@ -342,8 +342,8 @@ sections.forEach(sec=>{
 sec.items.forEach((r,i)=>{
 let add=document.getElementById(`${sec.id}_${i}_add`).checked;
 let qty=+document.getElementById(`${sec.id}_${i}_qty`).value||0;
-let calcText=document.getElementById(`${sec.id}_${i}_sum`).innerText.replace(/[$,]/g,"");
-let calculated=+calcText||0;
+let calcText = document.getElementById(`${sec.id}_${i}_sum`).innerText;
+let calculated = Number(calcText.replace(/[^\d.-]/g, "")) || 0;
 let override=+document.getElementById(`${sec.id}_${i}_override`).value||0;
 let final=override>0?override:calculated;
 if(add && qty>0 && final>0){
