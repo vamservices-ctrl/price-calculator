@@ -1,38 +1,543 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-<title>VAM Services Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAM Services Price Calculator</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+.header {
+  background: #111;
+  color: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: #ccc;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.service-title {
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.service-content {
+  display: none;
+  margin-top: 18px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px 18px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.result {
+  background: #eef7ee;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.note {
+  font-size: 13px;
+  color: #666;
+  margin-top: 8px;
+}
+</style>
 </head>
+
 <body>
-<h1>VAM Services Calculator</h1>
+<div class="container">
 
-<label>Service:</label>
-<select id="service">
-  <option value="2.5">LVP Flooring ($2.5/SF)</option>
-  <option value="3">Laminate Flooring ($3/SF)</option>
-  <option value="4.5">Painting ($4,500 / 2000 SF)</option>
-</select>
+<div class="header">
+  <h1>VAM Services Calculator</h1>
+  <p>Internal estimator for quick preliminary pricing</p>
+</div>
 
-<br><br>
+<!-- PAINTING -->
+<div class="card">
+  <div class="service-title" onclick="toggle('painting')">🎨 Покраска <span>+</span></div>
+  <div id="painting" class="service-content">
+    <label>Площадь дома, SF</label>
+    <input type="number" id="paint_sf" value="2000">
 
-<label>Quantity:</label>
-<input type="number" id="qty" value="100">
+    <label>Уровень цены</label>
+    <select id="paint_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
 
-<br><br>
+    <label>Мебель</label>
+    <select id="paint_furniture">
+      <option value="0">Пустой дом</option>
+      <option value="0.15">Частично меблирован +15%</option>
+      <option value="0.20">Полностью меблирован +20%</option>
+    </select>
 
-<button onclick="calculate()">Calculate</button>
+    <label>Потолки</label>
+    <select id="paint_ceiling">
+      <option value="0">Нет</option>
+      <option value="0.875">Да, покрасить потолки</option>
+    </select>
 
-<h2 id="result"></h2>
+    <label>3-й слой / праймер</label>
+    <select id="paint_primer">
+      <option value="0">Нет</option>
+      <option value="1">Да</option>
+    </select>
+
+    <label>Двери, шт</label>
+    <input type="number" id="paint_doors" value="0">
+
+    <label>Подоконники, шт</label>
+    <input type="number" id="paint_sills" value="0">
+
+    <label>Полки, шт</label>
+    <input type="number" id="paint_shelves" value="0">
+
+    <button onclick="calcPainting()">Рассчитать</button>
+    <div id="paint_result" class="result"></div>
+  </div>
+</div>
+
+<!-- CABINETS -->
+<div class="card">
+  <div class="service-title" onclick="toggle('cabinets')">🍽 Покраска кухонных шкафов <span>+</span></div>
+  <div id="cabinets" class="service-content">
+    <label>Дверцы, шт</label>
+    <input type="number" id="cab_doors" value="20">
+
+    <label>Ящики, шт</label>
+    <input type="number" id="cab_drawers" value="10">
+
+    <label>Уровень цены</label>
+    <select id="cab_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <label>Фрейм шкафов</label>
+    <select id="cab_frame">
+      <option value="0.30">Да +30%</option>
+      <option value="0">Нет</option>
+    </select>
+
+    <button onclick="calcCabinets()">Рассчитать</button>
+    <div id="cab_result" class="result"></div>
+  </div>
+</div>
+
+<!-- DRYWALL -->
+<div class="card">
+  <div class="service-title" onclick="toggle('drywall')">🧱 Гипсокартон <span>+</span></div>
+  <div id="drywall" class="service-content">
+    <label>Небольшой ремонт, шт</label>
+    <input type="number" id="dry_small" value="0">
+
+    <label>Средний ремонт до 2×2 ft, шт</label>
+    <input type="number" id="dry_medium" value="0">
+
+    <label>Ремонт после протечки, шт</label>
+    <input type="number" id="dry_leak" value="0">
+
+    <label>Замена ленты, участки по 10 LF</label>
+    <input type="number" id="dry_tape" value="0">
+
+    <label>Skim Coat 1 слой, SF</label>
+    <input type="number" id="dry_skim1" value="0">
+
+    <label>Skim Coat 2 слоя / Level 5, SF</label>
+    <input type="number" id="dry_skim2" value="0">
+
+    <label>Уровень цены</label>
+    <select id="dry_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <button onclick="calcDrywall()">Рассчитать</button>
+    <div id="dry_result" class="result"></div>
+  </div>
+</div>
+
+<!-- FLOORING -->
+<div class="card">
+  <div class="service-title" onclick="toggle('flooring')">🪵 Полы <span>+</span></div>
+  <div id="flooring" class="service-content">
+    <label>Тип пола</label>
+    <select id="floor_type">
+      <option value="lvp">LVP / винил</option>
+      <option value="laminate">Ламинат</option>
+      <option value="engineered">Инженерная доска плавающая</option>
+      <option value="glue">Инженерная доска на клей</option>
+    </select>
+
+    <label>Площадь, SF</label>
+    <input type="number" id="floor_sf" value="1000">
+
+    <label>Уровень цены</label>
+    <select id="floor_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <label>Демонтаж</label>
+    <select id="floor_demo">
+      <option value="0">Нет</option>
+      <option value="carpet">Ковер</option>
+      <option value="floating">LVP / ламинат / плавающая доска</option>
+      <option value="glued">Приклеенная инженерная доска</option>
+    </select>
+
+    <label>Лестницы, ступени</label>
+    <input type="number" id="floor_stairs" value="0">
+
+    <label>Выравнивание пола</label>
+    <select id="floor_leveling">
+      <option value="0">Нет</option>
+      <option value="200">Небольшой участок $200</option>
+      <option value="750">Средний участок $750</option>
+      <option value="1500">Большой участок $1500</option>
+    </select>
+
+    <button onclick="calcFlooring()">Рассчитать</button>
+    <div id="floor_result" class="result"></div>
+  </div>
+</div>
+
+<!-- DOORS -->
+<div class="card">
+  <div class="service-title" onclick="toggle('doors')">🚪 Двери и плинтусы <span>+</span></div>
+  <div id="doors" class="service-content">
+    <label>Межкомнатные двери, шт</label>
+    <input type="number" id="door_interior" value="0">
+
+    <label>Prehung двери, шт</label>
+    <input type="number" id="door_prehung" value="0">
+
+    <label>Входные двери, шт</label>
+    <input type="number" id="door_entry" value="0">
+
+    <label>Плинтусы, LF</label>
+    <input type="number" id="base_lf" value="0">
+
+    <label>Crown Molding, LF</label>
+    <input type="number" id="crown_lf" value="0">
+
+    <label>Уровень цены</label>
+    <select id="door_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <button onclick="calcDoors()">Рассчитать</button>
+    <div id="door_result" class="result"></div>
+  </div>
+</div>
+
+<!-- FENCE -->
+<div class="card">
+  <div class="service-title" onclick="toggle('fence')">🏡 Забор <span>+</span></div>
+  <div id="fence" class="service-content">
+    <label>Длина забора, LF</label>
+    <input type="number" id="fence_lf" value="100">
+
+    <label>Уровень цены</label>
+    <select id="fence_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <label>Железные столбы</label>
+    <select id="fence_steel">
+      <option value="0">Нет</option>
+      <option value="1">Да</option>
+    </select>
+
+    <label>Верхняя корона</label>
+    <select id="fence_cap">
+      <option value="0">Нет</option>
+      <option value="1">Да</option>
+    </select>
+
+    <label>Демонтаж старого забора</label>
+    <select id="fence_demo">
+      <option value="0">Нет</option>
+      <option value="1">Да</option>
+    </select>
+
+    <label>Ворота, шт</label>
+    <input type="number" id="fence_gates" value="0">
+
+    <button onclick="calcFence()">Рассчитать</button>
+    <div id="fence_result" class="result"></div>
+  </div>
+</div>
+
+<!-- DECK -->
+<div class="card">
+  <div class="service-title" onclick="toggle('deck')">🏡 Deck / Pergola <span>+</span></div>
+  <div id="deck" class="service-content">
+    <label>Тип работы</label>
+    <select id="deck_type">
+      <option value="wood">Новый деревянный deck</option>
+      <option value="composite">Composite deck</option>
+      <option value="wash">Мойка deck</option>
+      <option value="stain">Морилка deck</option>
+    </select>
+
+    <label>Площадь, SF</label>
+    <input type="number" id="deck_sf" value="300">
+
+    <label>Уровень цены</label>
+    <select id="deck_level">
+      <option value="medium">Средняя</option>
+      <option value="low">Низкая</option>
+      <option value="high">Высокая</option>
+    </select>
+
+    <button onclick="calcDeck()">Рассчитать</button>
+    <div id="deck_result" class="result"></div>
+  </div>
+</div>
+
+</div>
 
 <script>
-function calculate() {
-  let rate = parseFloat(document.getElementById("service").value);
-  let qty = parseFloat(document.getElementById("qty").value);
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "block" ? "none" : "block";
+}
 
-  let total = rate * qty;
+function money(n) {
+  return "$" + Math.round(n).toLocaleString();
+}
 
-  document.getElementById("result").innerHTML =
-    "$" + total.toFixed(2);
+function levelValue(level, low, med, high) {
+  if (level === "low") return low;
+  if (level === "high") return high;
+  return med;
+}
+
+/* PAINTING */
+function calcPainting() {
+  let sf = +document.getElementById("paint_sf").value;
+  let level = document.getElementById("paint_level").value;
+
+  let baseRate = levelValue(level, 1.75, 2.375, 3.00);
+  let total = sf * baseRate;
+
+  total += total * (+document.getElementById("paint_furniture").value);
+
+  if (+document.getElementById("paint_ceiling").value > 0) {
+    total += sf * 0.875;
+  }
+
+  if (+document.getElementById("paint_primer").value > 0) {
+    total += sf * levelValue(level, 0.75, 1.00, 1.50);
+  }
+
+  total += (+document.getElementById("paint_doors").value) * levelValue(level, 120, 135, 150);
+  total += (+document.getElementById("paint_sills").value) * 30;
+  total += (+document.getElementById("paint_shelves").value) * 30;
+
+  if (total < 300) total = 300;
+
+  document.getElementById("paint_result").innerHTML =
+    "<b>Итого:</b> " + money(total) +
+    "<div class='note'>Предварительная цена. Финальная смета после фото или осмотра.</div>";
+}
+
+/* CABINETS */
+function calcCabinets() {
+  let doors = +document.getElementById("cab_doors").value;
+  let drawers = +document.getElementById("cab_drawers").value;
+  let level = document.getElementById("cab_level").value;
+  let frame = +document.getElementById("cab_frame").value;
+
+  let doorPrice = levelValue(level, 60, 90, 135);
+  let drawerPrice = levelValue(level, 50, 70, 110);
+
+  let total = doors * doorPrice + drawers * drawerPrice;
+  total += total * frame;
+
+  if (total < 1500) total = 1500;
+
+  document.getElementById("cab_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
+}
+
+/* DRYWALL */
+function calcDrywall() {
+  let level = document.getElementById("dry_level").value;
+  let total = 0;
+
+  total += (+document.getElementById("dry_small").value) * levelValue(level, 150, 200, 300);
+  total += (+document.getElementById("dry_medium").value) * levelValue(level, 250, 400, 600);
+  total += (+document.getElementById("dry_leak").value) * levelValue(level, 400, 600, 800);
+  total += (+document.getElementById("dry_tape").value) * levelValue(level, 400, 600, 800);
+  total += (+document.getElementById("dry_skim1").value) * levelValue(level, 2, 3, 4);
+  total += (+document.getElementById("dry_skim2").value) * levelValue(level, 4, 6, 8);
+
+  if (total > 0 && total < 200) total = 200;
+
+  document.getElementById("dry_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
+}
+
+/* FLOORING */
+function calcFlooring() {
+  let sf = +document.getElementById("floor_sf").value;
+  let type = document.getElementById("floor_type").value;
+  let level = document.getElementById("floor_level").value;
+  let demo = document.getElementById("floor_demo").value;
+  let stairs = +document.getElementById("floor_stairs").value;
+  let leveling = +document.getElementById("floor_leveling").value;
+
+  let rates = {
+    lvp: [2, 2.75, 3.5],
+    laminate: [2.5, 3.25, 4],
+    engineered: [3, 3.75, 4.5],
+    glue: [6, 7, 9]
+  };
+
+  let index = level === "low" ? 0 : level === "high" ? 2 : 1;
+  let total = sf * rates[type][index];
+
+  if (demo === "carpet") total += sf * levelValue(level, 0.25, 0.45, 0.75);
+  if (demo === "floating") total += sf * levelValue(level, 0.75, 1.00, 1.25);
+  if (demo === "glued") total += sf * levelValue(level, 3.00, 4.25, 6.00);
+
+  total += stairs * levelValue(level, 75, 125, 200);
+  total += leveling;
+
+  if (total > 0 && total < 350) total = 350;
+
+  document.getElementById("floor_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
+}
+
+/* DOORS */
+function calcDoors() {
+  let level = document.getElementById("door_level").value;
+  let total = 0;
+
+  total += (+document.getElementById("door_interior").value) * levelValue(level, 150, 200, 275);
+  total += (+document.getElementById("door_prehung").value) * levelValue(level, 150, 200, 275);
+  total += (+document.getElementById("door_entry").value) * levelValue(level, 400, 700, 1000);
+  total += (+document.getElementById("base_lf").value) * levelValue(level, 1.5, 2.25, 3);
+  total += (+document.getElementById("crown_lf").value) * levelValue(level, 2, 2.75, 3.5);
+
+  document.getElementById("door_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
+}
+
+/* FENCE */
+function calcFence() {
+  let lf = +document.getElementById("fence_lf").value;
+  let level = document.getElementById("fence_level").value;
+
+  let total = lf * levelValue(level, 35, 50, 70);
+
+  if (+document.getElementById("fence_steel").value) {
+    total += lf * levelValue(level, 5, 10, 12);
+  }
+
+  if (+document.getElementById("fence_cap").value) {
+    total += lf * levelValue(level, 8, 12, 18);
+  }
+
+  if (+document.getElementById("fence_demo").value) {
+    total += lf * levelValue(level, 3, 5, 8);
+  }
+
+  total += (+document.getElementById("fence_gates").value) * levelValue(level, 250, 600, 1500);
+
+  document.getElementById("fence_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
+}
+
+/* DECK */
+function calcDeck() {
+  let sf = +document.getElementById("deck_sf").value;
+  let type = document.getElementById("deck_type").value;
+  let level = document.getElementById("deck_level").value;
+
+  let rates = {
+    wood: [35, 55, 85],
+    composite: [50, 85, 150],
+    wash: [0.25, 0.45, 0.75],
+    stain: [1.5, 2.5, 4]
+  };
+
+  let index = level === "low" ? 0 : level === "high" ? 2 : 1;
+  let total = sf * rates[type][index];
+
+  if (type === "wash" && total < 250) total = 250;
+
+  document.getElementById("deck_result").innerHTML =
+    "<b>Итого:</b> " + money(total);
 }
 </script>
 
