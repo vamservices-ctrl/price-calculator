@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VAM Services Calculator</title>
+</head>
+<body>
+<h1>VAM Services Calculator</h1>
+
+<label>Service:</label>
+<select id="service">
+  <option value="2.5">LVP Flooring ($2.5/SF)</option>
+  <option value="3">Laminate Flooring ($3/SF)</option>
+  <option value="4.5">Painting ($4,500 / 2000 SF)</option>
+</select>
+
+<br><br>
+
+<label>Quantity:</label>
+<input type="number" id="qty" value="100">
+
+<br><br>
+
+<button onclick="calculate()">Calculate</button>
+
+<h2 id="result"></h2>
+
+<script>
+function calculate() {
+  let rate = parseFloat(document.getElementById("service").value);
+  let qty = parseFloat(document.getElementById("qty").value);
+
+  let total = rate * qty;
+
+  document.getElementById("result").innerHTML =
+    "$" + total.toFixed(2);
+}
+</script>
+
+</body>
+</html>
