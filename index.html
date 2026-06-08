@@ -271,63 +271,145 @@
       color: var(--muted)
     }
 
-    @media (max-width: 900px) {
+   @media (max-width: 900px) {
   body {
     padding: 8px;
+    font-size: 16px;
   }
 
   .container {
     max-width: 100%;
   }
 
-  .header,
-  .estimate-header {
+  .header {
     display: block;
     text-align: center;
+    padding: 22px 14px;
+    border-radius: 22px;
   }
 
-  .logo,
-  .estimate-logo {
-    width: 80px;
+  .logo {
+    width: 95px;
     height: auto;
-    margin-bottom: 10px;
+    margin: 0 auto 12px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .header p {
+    font-size: 16px;
   }
 
   .client-grid {
     grid-template-columns: 1fr;
   }
 
-  .row,
-  .edit-grid {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 14px 0;
+  .title {
+    font-size: 21px;
+    padding: 18px 16px;
   }
 
-  .head {
+  .content {
+    padding: 0 14px 16px;
+  }
+
+  .row {
+    display: block;
+    border-top: 1px solid var(--line);
+    padding: 16px 0;
+  }
+
+  .row.head {
     display: none;
   }
 
-  .row > div,
-  .edit-grid > div {
-    width: 100%;
+  .row > div {
+    margin-bottom: 8px;
   }
 
-  .title {
+  .row > div:first-child {
+    float: right;
+    width: auto;
+  }
+
+  .item-title {
+    font-size: 17px;
+    padding-right: 40px;
+  }
+
+  .item-ru {
+    font-size: 13px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+    padding: 11px;
+  }
+
+  .price {
+    display: inline-block;
+    margin-right: 12px;
+    font-size: 14px;
+  }
+
+  .sum {
     font-size: 18px;
-    padding: 16px;
+    margin-top: 6px;
+  }
+
+  .total {
+    font-size: 20px;
+  }
+
+  button {
+    width: 100%;
+    margin: 6px 0;
+    padding: 13px;
+    font-size: 16px;
+  }
+
+  .estimate-header {
+    display: block;
+    text-align: center;
+  }
+
+  .estimate-logo {
+    width: 85px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .estimate-title {
+    font-size: 24px;
+    line-height: 1.15;
+    margin-top: 12px;
+  }
+
+  .edit-grid {
+    display: block;
+    padding: 14px 0;
+  }
+
+  .edit-grid.head {
+    display: none;
+  }
+
+  .edit-grid > div {
+    margin-bottom: 8px;
   }
 
   .estimate-box {
     padding: 14px;
-  }
-
-  .estimate-title {
-    font-size: 22px;
+    border-radius: 14px;
   }
 
   .estimate-table {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .estimate-table th,
@@ -335,34 +417,18 @@
     padding: 8px;
   }
 
+  .estimate-table th:nth-child(1),
+  .estimate-table td:nth-child(1) {
+    display: none;
+  }
+
   .summary {
     max-width: 100%;
     margin-left: 0;
   }
 
-  button {
-    width: 100%;
-    margin: 6px 0;
-  }
-}
-
-   @media print {
-  body {
-    background: white;
-    padding: 0;
-  }
-
-  .calculator-screen,
-  .estimate-controls,
-  .top-buttons,
-  .edit-only {
-    display: none !important;
-  }
-
-  .estimate-box {
-    border: 0;
-    box-shadow: none;
-    border-radius: 0;
+  .big-total {
+    font-size: 22px;
   }
 }
   </style>
