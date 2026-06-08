@@ -126,6 +126,34 @@
       <div class="card estimate-controls">
         <div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div>
         <div id="estimateEdit" class="content" style="display:block">
+          <div class="card" style="margin-bottom:16px;">
+  <div class="title">👤 Client Information</div>
+
+  <div class="client-grid">
+    <div>
+      <label>Client Name</label>
+      <input id="estimateClientName" placeholder="Client name">
+    </div>
+
+    <div>
+      <label>Phone</label>
+      <input id="estimateClientPhone" placeholder="Phone">
+    </div>
+
+    <div>
+      <label>Email</label>
+      <input id="estimateClientEmail" placeholder="Client email">
+    </div>
+
+    <div>
+      <label>Project Address</label>
+      <input id="estimateProjectAddress" placeholder="Project address">
+    </div>
+  </div>
+
+  <label>Project Notes</label>
+  <textarea id="estimateProjectNotes" placeholder="Project notes"></textarea>
+</div>
           <div id="editableItems"></div>
           <div class="client-grid" style="margin-top:12px">
             <div><label>Discount Type</label>
@@ -456,6 +484,20 @@
         return;
       }
       renderEditableItems();
+      document.getElementById('estimateClientName').value =
+document.getElementById('clientName').value;
+
+document.getElementById('estimateClientPhone').value =
+document.getElementById('clientPhone').value;
+
+document.getElementById('estimateClientEmail').value =
+document.getElementById('clientEmail').value;
+
+document.getElementById('estimateProjectAddress').value =
+document.getElementById('projectAddress').value;
+
+document.getElementById('estimateProjectNotes').value =
+document.getElementById('projectNotes').value;
       document.getElementById("calculatorScreen").classList.add("hidden");
       document.getElementById("estimateScreen").classList.remove("hidden");
       refreshEstimatePage();
