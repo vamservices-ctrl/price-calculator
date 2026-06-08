@@ -258,13 +258,24 @@
     }
 
     .edit-grid {
-      display: grid;
-      grid-template-columns: 2.2fr .9fr 1fr 1fr;
-      gap: 10px;
-      align-items: center;
-      border-top: 1px solid var(--line);
-      padding: 10px 0
-    }
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.edit-grid.head {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.edit-grid input {
+  width: 100%;
+}
 
     .small-muted {
       font-size: 12px;
@@ -621,15 +632,14 @@
     function backToCalculator() { document.getElementById("estimateScreen").classList.add("hidden"); document.getElementById("calculatorScreen").classList.remove("hidden"); window.scrollTo(0, 0); }
     function renderEditableItems() {
   let html = `
-    <button onclick="addCustomItem()" style="margin-bottom:12px;">
+    <button onclick="addCustomItem()" style="margin-bottom:14px;">
       + Add Custom Item
     </button>
 
     <div class="edit-grid head">
       <div>Description</div>
       <div>Volume</div>
-      <div>Calculated</div>
-      <div>Editable Price</div>
+      <div>Final Price</div>
     </div>
   `;
 
@@ -645,7 +655,7 @@
           <div class="small-muted">${x.ru || ""}</div>
         </div>
 
-        <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <input 
             type="number" 
             value="${x.qty}" 
@@ -659,8 +669,6 @@
           >
         </div>
 
-        <div>${money(x.calculated)}</div>
-
         <div>
           <input 
             type="number" 
@@ -672,6 +680,9 @@
       </div>
     `;
   });
+
+  document.getElementById("editableItems").innerHTML = html;
+}
 
   document.getElementById("editableItems").innerHTML = html;
 }
