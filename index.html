@@ -431,6 +431,108 @@
     font-size: 22px;
   }
 }
+    @media print {
+  @page {
+    size: Letter;
+    margin: 0.45in;
+  }
+
+  body {
+    background: white !important;
+    padding: 0 !important;
+    color: #111827 !important;
+  }
+
+  .calculator-screen,
+  .estimate-controls,
+  .top-buttons,
+  .card:not(.print-keep) {
+    display: none !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #estimateScreen {
+    display: block !important;
+  }
+
+  .estimate-box {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  .estimate-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    border-bottom: 2px solid #b8862b !important;
+    padding-bottom: 14px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .estimate-logo {
+    width: 80px !important;
+    height: auto !important;
+    border-radius: 8px !important;
+  }
+
+  .estimate-title {
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    text-align: right !important;
+  }
+
+  .estimate-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 16px !important;
+    font-size: 12px !important;
+  }
+
+  .estimate-table th {
+    background: #111827 !important;
+    color: white !important;
+    padding: 8px !important;
+  }
+
+  .estimate-table td {
+    padding: 8px !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+  .summary {
+    page-break-inside: avoid !important;
+    max-width: 360px !important;
+    margin-left: auto !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+  }
+
+  .big-total {
+    font-size: 20px !important;
+    color: #b8862b !important;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid !important;
+  }
+
+  table,
+  tr,
+  td,
+  th {
+    page-break-inside: avoid !important;
+  }
+}
   </style>
 </head>
 
