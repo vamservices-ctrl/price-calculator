@@ -1,67 +1,411 @@
-const SHEET_ID = '1Ucxq8PV1mB5_YhHNJjgzM-ql0Ea7jh7d0URBeZwWUeU';
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VAM Services Calculator</title>
-<style>
-:root{--bg:#f4f6f8;--card:#fff;--dark:#111827;--gold:#b8862b;--muted:#6b7280;--line:#e5e7eb;--green:#ecfdf5;}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#111827;padding:18px}.container{max-width:1300px;margin:auto}.header{background:#111;color:white;padding:22px;border-radius:18px;margin-bottom:18px;display:flex;gap:18px;align-items:center}.logo{width:95px;height:95px;object-fit:contain;background:white;border-radius:12px;padding:6px}.header h1{margin:0;font-size:30px}.header p{margin:6px 0;color:#d1d5db}.card{background:white;border-radius:16px;margin-bottom:14px;box-shadow:0 3px 14px rgba(0,0,0,.08);overflow:hidden}.title{padding:18px 20px;font-size:21px;font-weight:700;display:flex;justify-content:space-between;cursor:pointer}.content{display:none;padding:0 18px 18px}.client-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.row{display:grid;grid-template-columns:.5fr 2.2fr .7fr .65fr .8fr .8fr .8fr .9fr 1fr;gap:7px;align-items:center;border-top:1px solid var(--line);padding:10px 0}.head{font-size:12px;font-weight:700;color:#4b5563;text-transform:uppercase}.item-title{font-weight:700}.item-ru{font-size:12px;color:var(--muted);margin-top:3px}input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:9px;font-size:14px;background:white}textarea{min-height:70px}.price{font-size:13px;color:#374151}.sum{font-weight:700}.total{background:var(--green);border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-top:14px;font-size:22px;font-weight:800}.note{font-size:12px;color:var(--muted);margin-top:8px}button{background:#111;color:white;border:0;border-radius:10px;padding:10px 14px;margin:8px 6px 8px 0;cursor:pointer;font-weight:700}button.gold{background:var(--gold)}button.gray{background:#6b7280}button.green{background:#047857}.hidden{display:none!important}.estimate-box{background:white;border:1px solid #d1d5db;border-radius:16px;padding:22px;margin-top:16px}.estimate-header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid var(--gold);padding-bottom:16px}.estimate-logo{width:90px;background:white;border-radius:12px;padding:4px}.estimate-title{font-size:28px;font-weight:800}.estimate-table{width:100%;border-collapse:collapse;margin-top:18px}.estimate-table th{background:#111;color:white;text-align:left;padding:10px}.estimate-table td{border-bottom:1px solid #ddd;padding:12px;vertical-align:top}.money{text-align:right;font-weight:700}.summary{margin-top:18px;max-width:420px;margin-left:auto;border:1px solid #ddd;border-radius:12px;padding:14px}.summary-row{display:flex;justify-content:space-between;margin:8px 0}.big-total{font-size:24px;color:var(--gold);font-weight:900}.edit-grid{display:grid;grid-template-columns:2.2fr .9fr 1fr 1fr;gap:10px;align-items:center;border-top:1px solid var(--line);padding:10px 0}.small-muted{font-size:12px;color:var(--muted)}
-@media(max-width:900px){.row,.edit-grid{grid-template-columns:1fr 1fr}.head{display:none}.client-grid{grid-template-columns:1fr}.header,.estimate-header{display:block;text-align:center}}
-@media print{body{background:white;padding:0}.calculator-screen,.estimate-controls,.top-buttons,.edit-only{display:none!important}.estimate-box{border:0;box-shadow:none;border-radius:0}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAM Services Calculator</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #fff;
+      --dark: #111827;
+      --gold: #b8862b;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --green: #ecfdf5;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: Arial, sans-serif;
+      color: #111827;
+      padding: 18px
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: auto
+    }
+
+    .header {
+      background: #111;
+      color: white;
+      padding: 22px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 18px;
+      align-items: center
+    }
+
+    .logo {
+      width: 95px;
+      height: 95px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      padding: 6px
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 30px
+    }
+
+    .header p {
+      margin: 6px 0;
+      color: #d1d5db
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 14px rgba(0, 0, 0, .08);
+      overflow: hidden
+    }
+
+    .title {
+      padding: 18px 20px;
+      font-size: 21px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer
+    }
+
+    .content {
+      display: none;
+      padding: 0 18px 18px
+    }
+
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: .5fr 2.2fr .7fr .65fr .8fr .8fr .8fr .9fr 1fr;
+      gap: 7px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding: 10px 0
+    }
+
+    .head {
+      font-size: 12px;
+      font-weight: 700;
+      color: #4b5563;
+      text-transform: uppercase
+    }
+
+    .item-title {
+      font-weight: 700
+    }
+
+    .item-ru {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 14px;
+      background: white
+    }
+
+    textarea {
+      min-height: 70px
+    }
+
+    .price {
+      font-size: 13px;
+      color: #374151
+    }
+
+    .sum {
+      font-weight: 700
+    }
+
+    .total {
+      background: var(--green);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 22px;
+      font-weight: 800
+    }
+
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px
+    }
+
+    button {
+      background: #111;
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 8px 6px 8px 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    button.gold {
+      background: var(--gold)
+    }
+
+    button.gray {
+      background: #6b7280
+    }
+
+    button.green {
+      background: #047857
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .estimate-box {
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 16px;
+      padding: 22px;
+      margin-top: 16px
+    }
+
+    .estimate-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 16px
+    }
+
+    .estimate-logo {
+      width: 90px;
+      background: white;
+      border-radius: 12px;
+      padding: 4px
+    }
+
+    .estimate-title {
+      font-size: 28px;
+      font-weight: 800
+    }
+
+    .estimate-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px
+    }
+
+    .estimate-table th {
+      background: #111;
+      color: white;
+      text-align: left;
+      padding: 10px
+    }
+
+    .estimate-table td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px;
+      vertical-align: top
+    }
+
+    .money {
+      text-align: right;
+      font-weight: 700
+    }
+
+    .summary {
+      margin-top: 18px;
+      max-width: 420px;
+      margin-left: auto;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 14px
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0
+    }
+
+    .big-total {
+      font-size: 24px;
+      color: var(--gold);
+      font-weight: 900
+    }
+
+    .edit-grid {
+      display: grid;
+      grid-template-columns: 2.2fr .9fr 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding: 10px 0
+    }
+
+    .small-muted {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    @media(max-width:900px) {
+
+      .row,
+      .edit-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .head {
+        display: none
+      }
+
+      .client-grid {
+        grid-template-columns: 1fr
+      }
+
+      .header,
+      .estimate-header {
+        display: block;
+        text-align: center
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0
+      }
+
+      .calculator-screen,
+      .estimate-controls,
+      .top-buttons,
+      .edit-only {
+        display: none !important
+      }
+
+      .estimate-box {
+        border: 0;
+        box-shadow: none;
+        border-radius: 0
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-<div id="calculatorScreen" class="calculator-screen">
-  <div class="header"><img src="LOGO.jpg" class="logo" alt="VAM Services Logo"><div><h1>VAM Services Price Calculator</h1><p>Home Repair & Remodeling</p><p>Internal calculator + preliminary estimate generator</p></div></div>
-  <div class="card"><div class="title" onclick="toggle('client')">👤 Client Information <span>+</span></div><div id="client" class="content" style="display:block"><div class="client-grid"><div><label>Client Name</label><input id="clientName" placeholder="Client name"></div><div><label>Phone</label><input id="clientPhone" placeholder="Phone"></div><div><label>Email</label><input id="clientEmail" placeholder="Client email"></div><div><label>Project Address</label><input id="projectAddress" placeholder="Project address"></div></div><label>Project Notes</label><textarea id="projectNotes" placeholder="Project notes"></textarea></div></div>
-  <div id="app"></div>
-  <div class="card top-buttons"><div class="content" style="display:block"><button class="gold" onclick="createEstimate()">Create Estimate</button><button class="gray" onclick="resetAll()">Reset All</button></div></div>
-</div>
-<div id="estimateScreen" class="hidden">
-  <div class="top-buttons estimate-controls"><button class="gray" onclick="backToCalculator()">Back to Calculator</button><button class="gold" onclick="refreshEstimatePage()">Update Estimate</button><button class="green" onclick="sendEstimate()">Send Email + Telegram</button><button class="gray" onclick="copyClientEstimate()">Copy Client Estimate</button><button class="gray" onclick="window.print()">Save / Print PDF</button></div>
-  <div class="card estimate-controls"><div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div><div id="estimateEdit" class="content" style="display:block"><div id="editableItems"></div><div class="client-grid" style="margin-top:12px"><div><label>Discount Type</label><select id="discountType" onchange="refreshEstimatePage()"><option value="none">None</option><option value="fixed">Fixed Amount</option><option value="percent">Percentage</option></select></div><div><label>Discount Value</label><input type="number" id="discountValue" value="0" oninput="refreshEstimatePage()"></div></div><label>Internal Notes - Not Shown To Client</label><textarea id="internalNotes" placeholder="Internal notes"></textarea><div class="note">Editable prices and internal notes are for you only. Client version shows service, volume, and final cost.</div></div></div>
-  <div id="estimatePreview" class="estimate-box"></div>
-</div>
-</div>
-<script>
-const WEB_APP_URL="https://script.google.com/macros/s/AKfycbzB-iThGoHZxGyLIKoenFm-44Me-FJhtDITWLlfOauLmMInJ42TBygLf35QNPekL_sl/exec";
-const sections=[
-{id:"painting",title:"🎨 Painting",minimum:0,items:[["Interior Painting - Walls & Ceilings","Покраска дома: стены + потолки","SF",2.50,3.00,4.00],["Interior Painting - Walls Only","Покраска дома: только стены","SF",1.50,2.00,3.00],["Interior Painting - Ceilings Only","Покраска дома: только потолки","SF",1.00,1.50,2.00],["Extra Coat / Primer","3-й слой / праймер","SF",0.75,1.00,2.00],["Interior Door Painting","Покраска двери","Each",100,120,150],["Door Frame Painting","Покраска дверной коробки","Each",40,60,100],["Window Sill Painting","Покраска подоконника","Each",25,30,50],["Window Sill Repair + Painting","Ремонт + покраска подоконника","Each",50,85,125],["Shelf Painting","Покраска полки","Each",25,30,50],["Shelf Repair + Painting","Ремонт + покраска полки","Each",50,85,125],["Moderate Wall Repairs Add-on","Ремонт стен перед покраской +10%","% of painting base",0,10,10,"sectionPercent"],["Heavy Wall Repairs Add-on","Серьезная подготовка стен +20%","% of painting base",0,20,20,"sectionPercent"]]},
-{id:"exterior",title:"🏠 Exterior Painting",items:[["Partial Brick / Partial Siding House","Дом частично кирпич / частично сайдинг","Project",2500,4000,6000],["Full Siding House","Дом полностью из сайдинга","Project",3500,5000,7000],["Two-Story Add-on","Доплата за второй этаж","% of exterior base",15,20,30,"sectionPercent"],["Second Color Add-on","Доплата за второй цвет / trim color","% of exterior base",15,20,30,"sectionPercent"],["Brick Painting Add-on","Доплата за покраску кирпича","% of exterior base",20,35,50,"sectionPercent"],["Foundation Painting","Покраска фундамента","Project",300,600,1200],["Downspout Painting","Покраска сливной трубы","Each",80,120,150],["Exterior Repair Area","Ремонт наружного участка","Each",100,150,250]]},
-{id:"cabinets",title:"🍽 Cabinet Painting",items:[["Cabinet Doors","Дверцы шкафов","Each",60,90,135],["Drawers","Ящики","Each",50,70,110],["Cabinet Frames","Фреймы шкафов","% of cabinet base",25,30,40,"sectionPercent"],["Sanding Add-on","Шлифовка шкафов","% of cabinet base",10,15,25,"sectionPercent"],["Caulking / Sealing Add-on","Герметик / caulking","% of cabinet base",5,10,15,"sectionPercent"],["Cabinet / Drawer Repair","Ремонт фасадов / ящиков / шпаклевка","Each",25,50,100]]},
-{id:"drywall",title:"🧱 Drywall",minimum:200,items:[["Small Drywall Repair","Небольшой ремонт отверстия","Each",150,200,300,"discount"],["Medium Drywall Repair up to 2×2 ft","Средний ремонт до 2×2 ft","Each",250,400,600,"discount"],["Leak Damage Drywall Repair","Ремонт после протечки","Each",400,600,800,"discount"],["Tape Repair - 10 LF Section","Замена ленты, участок 10 LF","Section",400,600,800],["Skim Coat - 1 Coat","Skim coat, 1 слой","SF",2,3,4],["Skim Coat / Level 5 - 2 Coats","Skim coat / Level 5, 2 слоя","SF",4,6,8]]},
-{id:"flooring",title:"🪵 Flooring",minimum:350,items:[["LVP Installation","Укладка LVP / винила","SF",2,2.75,3.5],["Laminate Installation","Укладка ламината","SF",2.5,3.25,4],["Engineered Hardwood - Floating","Инженерная доска, плавающая","SF",3,3.75,4.5],["Engineered Hardwood - Glue Down","Инженерная доска на клей","SF",6,7,9],["LVP / Laminate Stairs","Ступени LVP / ламинат","Step",75,100,150],["Engineered Hardwood Stairs","Ступени инженерная доска","Step",100,175,300],["Carpet Removal","Демонтаж ковра","SF",0.25,0.45,0.75],["LVP / Laminate Removal","Демонтаж LVP / ламината","SF",0.75,1,1.25],["Glued Engineered Hardwood Removal","Демонтаж приклеенной инженерной доски","SF",3,4.25,6],["Floor Leveling - Small Area","Выравнивание пола, маленький участок","Each",200,350,500],["Floor Leveling - Medium Area","Выравнивание пола, средний участок","Each",500,1000,1500],["Quarter Round Installation","Установка quarter round","LF",1,1.5,2],["Transition Strip Installation","Установка переходного порожка","Each",40,50,80]]},
-{id:"doors",title:"🚪 Doors & Trim",items:[["Interior Door Replacement","Замена межкомнатной двери","Each",75,120,160],["Prehung Door Installation","Установка двери с коробкой","Each",100,150,200],["Entry Door Installation","Установка входной двери","Each",400,700,1000],["Baseboard Installation","Установка плинтуса","LF",1.5,2.25,3],["Baseboard Installation + Painting","Установка + покраска плинтуса","LF",4,5,6],["Crown Molding Installation","Установка crown molding","LF",2,3,4],["Crown Molding Installation + Painting","Установка + покраска crown molding","LF",4,6,8],["Window Trim Installation","Установка оконного trim","LF",2,4,6],["Window Trim Installation + Painting","Установка + покраска оконного trim","LF",4,6,8]]},
-{id:"handyman",title:"🔧 Handyman",items:[["TV Mount","Установка телевизора","Each",150,200,400],["Wire Concealment","Скрытие проводов","Each",50,125,200],["Wall Shelves","Настенные полки","Project",40,80,150],["Mirror Installation","Монтаж зеркала","Each",75,175,350],["Picture / Decor Installation","Монтаж картин / декора","Each",25,40,100],["Ceiling Fan Installation","Потолочный вентилятор","Each",125,175,250],["Standard Chandelier","Люстра стандартная","Each",100,150,250],["High Ceiling Chandelier 18–20 ft","Люстра 18–20 ft","Each",300,450,800],["Light Fixture Replacement","Замена светильника","Each",80,120,200],["Outlet Replacement","Замена розетки","Each",25,40,60],["Switch Replacement","Замена выключателя","Each",25,40,60],["GFCI Outlet Replacement","Замена GFCI розетки","Each",50,75,100],["Dimmer Switch Replacement","Замена диммера","Each",50,75,100],["Faucet Replacement","Замена смесителя","Each",125,150,250],["Kitchen Faucet Replacement","Замена кухонного смесителя","Each",150,250,450],["Toilet Replacement","Замена унитаза","Each",150,200,350],["Garbage Disposal Replacement","Замена измельчителя мусора","Each",150,200,300],["P-Trap Replacement","Замена сифона","Each",100,175,300],["Bidet Installation","Установка биде","Each",100,175,300],["Shower Head Replacement","Замена душевой лейки","Each",75,125,200],["Bathtub Caulking","Герметизация ванны","Each",125,225,400],["Shower Caulking","Герметизация душевой","Each",150,275,500],["Blinds Installation","Установка жалюзи","Window",40,50,100],["Curtain Rod Installation","Установка карниза","Window",75,125,250],["Window Caulking","Герметизация окна","Window",75,150,300]]},
-{id:"fence",title:"🏡 Fence",items:[["Wood Privacy Fence - 6 ft","Деревянный забор 6 ft","LF",35,50,70],["Steel Posts Add-on","Доплата за железные столбы","LF",5,10,12],["Top Cap & Trim","Верхняя корона","LF",8,12,18],["Old Fence Removal","Демонтаж старого забора","LF",3,5,8],["Single Gate","Калитка","Each",250,300,500],["Single Gate - New Frame / Complex","Калитка сложная / новая рама","Each",300,500,700],["Double Gate","Двустворчатые ворота","Each",400,700,1200],["Fence Paint / Stain - One Side","Покраска / stain забора, одна сторона","LF",10,12,14],["Fence Paint / Stain - Two Sides","Покраска / stain забора, две стороны","LF",17.5,21,24.5]]},
-{id:"deck",title:"🏡 Deck & Pergola",minimum:250,items:[["New Wood Deck","Новый деревянный deck","SF",35,50,70],["New Composite Deck","Новый composite deck","SF",55,70,100],["Deck Wash","Мойка deck","SF",0.25,0.45,0.75],["Deck Stain","Морилка deck","SF",1.5,2.5,4],["Deck Board Replacement","Замена досок deck","LF",15,25,45],["Small Pergola","Маленькая pergola","Project",2000,3000,4000],["Medium Pergola","Средняя pergola","Project",4000,6000,8000],["Large Pergola","Большая pergola","Project",8000,14000,20000]]}
-];
-let currentEstimateItems=[];
-function money(n){return "$"+Number(n).toLocaleString(undefined,{maximumFractionDigits:0});}
-function price(n){return "$"+Number(n).toLocaleString(undefined,{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});}
-function val(level,low,work,high){return level==="low"?low:level==="high"?high:work;}
-function toggle(id){let el=document.getElementById(id);el.style.display=el.style.display==="block"?"none":"block";}
-function drywallDiscount(qty){if(qty>=10)return .75;if(qty>=6)return .80;if(qty>=3)return .90;return 1;}
-function safeNumFromText(txt){return Number(String(txt).replace(/[^\d.-]/g,""))||0;}
-function render(){const app=document.getElementById("app");app.innerHTML="";sections.forEach(sec=>{app.innerHTML+=`<div class="card calculator-only"><div class="title" onclick="toggle('${sec.id}')">${sec.title}<span>+</span></div><div id="${sec.id}" class="content">${renderSection(sec)}</div></div>`;});}
-function renderSection(sec){let html=`<button onclick="resetSection('${sec.id}')">Reset This Section</button><div class="row head"><div>Add</div><div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Calculated</div></div>`;sec.items.forEach((r,i)=>html+=row(sec.id,i,r));html+=`<div class="total" id="${sec.id}_total">Grand Total: $0</div>`;if(sec.id==="flooring")html+=`<div class="note"><b>Assistant note:</b> Ask if client wants baseboards, quarter round, and how many transition strips are needed.</div>`;return html;}
-function row(id,i,r){return `<div class="row"><div><input type="checkbox" id="${id}_${i}_add"></div><div><div class="item-title">${r[0]}</div><div class="item-ru">${r[1]}</div></div><div><input type="number" id="${id}_${i}_qty" value="0" min="0" step="0.01" oninput="calcSection('${id}')"></div><div class="price">${r[2]}</div><div class="price">${price(r[3])}</div><div class="price">${price(r[4])}</div><div class="price">${price(r[5])}</div><div><select id="${id}_${i}_level" onchange="calcSection('${id}')"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div><div class="sum" id="${id}_${i}_sum">$0</div></div>`;}
-function calcSection(secId){const sec=sections.find(s=>s.id===secId);let total=0,sectionBase=0;sec.items.forEach((r,i)=>{let qty=+document.getElementById(`${secId}_${i}_qty`).value||0;let level=document.getElementById(`${secId}_${i}_level`).value;let rate=val(level,r[3],r[4],r[5]);let line=0;if(r[6]==="sectionPercent"){line=qty>0?sectionBase*(rate/100):0;}else{if(r[6]==="discount")rate*=drywallDiscount(qty);line=qty*rate;sectionBase+=line;}document.getElementById(`${secId}_${i}_sum`).innerText=money(line);total+=line;});if(sec.minimum&&total>0&&total<sec.minimum)total=sec.minimum;if(secId==="cabinets"&&total>0&&total<1500)total=1500;document.getElementById(`${secId}_total`).innerText="Grand Total: "+money(total);}
-function resetSection(id){document.querySelectorAll(`#${id} input[type="number"]`).forEach(x=>x.value=0);document.querySelectorAll(`#${id} input[type="checkbox"]`).forEach(x=>x.checked=false);document.querySelectorAll(`#${id} select`).forEach(x=>x.value="working");calcSection(id);}
-function resetAll(){sections.forEach(s=>resetSection(s.id));["clientName","clientPhone","clientEmail","projectAddress","projectNotes","internalNotes"].forEach(id=>document.getElementById(id).value="");}
-function collectItems(){let items=[];sections.forEach(sec=>{sec.items.forEach((r,i)=>{const add=document.getElementById(`${sec.id}_${i}_add`).checked;const qty=+document.getElementById(`${sec.id}_${i}_qty`).value||0;const calculated=safeNumFromText(document.getElementById(`${sec.id}_${i}_sum`).innerText);if(add&&qty>0&&calculated>0){items.push({section:sec.title.replace(/^[^A-Za-z]+/,""),name:r[0],ru:r[1],qty,unit:r[2],calculated,final:calculated});}});});return items;}
-function createEstimate(){currentEstimateItems=collectItems();if(currentEstimateItems.length===0){alert("Select at least one item: Add + Qty.");return;}renderEditableItems();document.getElementById("calculatorScreen").classList.add("hidden");document.getElementById("estimateScreen").classList.remove("hidden");refreshEstimatePage();window.scrollTo(0,0);}
-function backToCalculator(){document.getElementById("estimateScreen").classList.add("hidden");document.getElementById("calculatorScreen").classList.remove("hidden");window.scrollTo(0,0);}
-function renderEditableItems(){let html=`<div class="edit-grid head"><div>Description</div><div>Volume</div><div>Calculated</div><div>Editable Price</div></div>`;currentEstimateItems.forEach((x,i)=>{html+=`<div class="edit-grid"><div><b>${x.name}</b><div class="small-muted">${x.ru}</div></div><div>${x.qty} ${x.unit}</div><div>${money(x.calculated)}</div><div><input type="number" id="edit_${i}" value="${Math.round(x.final)}" oninput="refreshEstimatePage()"></div></div>`;});document.getElementById("editableItems").innerHTML=html;}
-function getEstimateTotals(){currentEstimateItems.forEach((x,i)=>x.final=+document.getElementById(`edit_${i}`).value||0);const subtotal=currentEstimateItems.reduce((s,x)=>s+x.final,0);const type=document.getElementById("discountType").value;const valDiscount=+document.getElementById("discountValue").value||0;let discount=0;if(type==="fixed")discount=valDiscount;if(type==="percent")discount=subtotal*(valDiscount/100);return{subtotal,discount,total:Math.max(0,subtotal-discount)};}
-function refreshEstimatePage(){if(currentEstimateItems.length===0)return;const t=getEstimateTotals();const rows=currentEstimateItems.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.name}</b><br><span style="color:#666">${x.ru}</span></td><td>${x.qty} ${x.unit}</td><td class="money">${money(x.final)}</td></tr>`).join("");document.getElementById("estimatePreview").innerHTML=`<div class="estimate-header"><div><img src="LOGO.jpg" class="estimate-logo"><h2>VAM Services LLC</h2><div>Home Repair & Remodeling</div><div>Phone: (858) 910-2956</div><div>Email: vamservicesllc.com@gmail.com</div><div>Website: vamservicesllc.com</div></div><div><div class="estimate-title">PRELIMINARY ESTIMATE</div><div>Date: ${new Date().toLocaleDateString()}</div><div>Estimate #: VAM-${Date.now().toString().slice(-6)}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px"><div><h3>Client Information</h3><div><b>Name:</b> ${document.getElementById("clientName").value||""}</div><div><b>Phone:</b> ${document.getElementById("clientPhone").value||""}</div><div><b>Email:</b> ${document.getElementById("clientEmail").value||""}</div></div><div><h3>Project Information</h3><div><b>Address:</b> ${document.getElementById("projectAddress").value||""}</div><div><b>Notes:</b> ${document.getElementById("projectNotes").value||""}</div></div></div><table class="estimate-table"><thead><tr><th>#</th><th>Description of Work</th><th>Volume</th><th>Estimated Cost</th></tr></thead><tbody>${rows}</tbody></table><div class="summary"><div class="summary-row"><span>Subtotal</span><b>${money(t.subtotal)}</b></div>${t.discount>0?`<div class="summary-row"><span>Discount</span><b style="color:green">-${money(t.discount)}</b></div>`:""}<hr><div class="summary-row big-total"><span>Estimated Total</span><span>${money(t.total)}</span></div></div><div style="margin-top:20px"><h3>Notes</h3><ul><li>This is a preliminary estimate.</li><li>Final price may change after site inspection, measurements, and material selection.</li><li>Materials are included unless otherwise specified.</li><li>This estimate is valid for 30 days.</li></ul></div>`;}
-function getClientText(){const t=getEstimateTotals();let text=`VAM Services LLC\nPRELIMINARY ESTIMATE\n\nClient: ${document.getElementById("clientName").value}\nPhone: ${document.getElementById("clientPhone").value}\nEmail: ${document.getElementById("clientEmail").value}\nAddress: ${document.getElementById("projectAddress").value}\n\nScope of Work:\n`;currentEstimateItems.forEach((x,i)=>{text+=`${i+1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}\n`;});text+=`\nSubtotal: ${money(t.subtotal)}\n${t.discount>0?`Discount: -${money(t.discount)}\n`:""}Estimated Total: ${money(t.total)}\n\nNotes:\nThis is a preliminary estimate.\nFinal price may change after site inspection, measurements, and material selection.\nMaterials are included unless otherwise specified.\n`;return text;}
-function copyClientEstimate(){navigator.clipboard.writeText(getClientText());alert("Client estimate copied.");}
-function sendEstimate(){refreshEstimatePage();const t=getEstimateTotals();const payload={clientName:document.getElementById("clientName").value,clientPhone:document.getElementById("clientPhone").value,clientEmail:document.getElementById("clientEmail").value,projectAddress:document.getElementById("projectAddress").value,scopeText:currentEstimateItems.map((x,i)=>`${i+1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`).join("\n"),subtotal:Math.round(t.subtotal),discount:Math.round(t.discount),total:Math.round(t.total)};fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(payload)});alert("Estimate sent to email and Telegram.");}
-render();
-</script>
+  <div class="container">
+    <div id="calculatorScreen" class="calculator-screen">
+      <div class="header"><img src="LOGO.jpg" class="logo" alt="VAM Services Logo">
+        <div>
+          <h1>VAM Services Price Calculator</h1>
+          <p>Home Repair & Remodeling</p>
+          <p>Internal calculator + preliminary estimate generator</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="title" onclick="toggle('client')">👤 Client Information <span>+</span></div>
+        <div id="client" class="content" style="display:block">
+          <div class="client-grid">
+            <div><label>Client Name</label><input id="clientName" placeholder="Client name"></div>
+            <div><label>Phone</label><input id="clientPhone" placeholder="Phone"></div>
+            <div><label>Email</label><input id="clientEmail" placeholder="Client email"></div>
+            <div><label>Project Address</label><input id="projectAddress" placeholder="Project address"></div>
+          </div><label>Project Notes</label><textarea id="projectNotes" placeholder="Project notes"></textarea>
+        </div>
+      </div>
+      <div id="app"></div>
+      <div class="card top-buttons">
+        <div class="content" style="display:block"><button class="gold" onclick="createEstimate()">Create
+            Estimate</button><button class="gray" onclick="resetAll()">Reset All</button></div>
+      </div>
+    </div>
+    <div id="estimateScreen" class="hidden">
+      <div class="top-buttons estimate-controls"><button class="gray" onclick="backToCalculator()">Back to
+          Calculator</button><button class="gold" onclick="refreshEstimatePage()">Update Estimate</button><button
+          class="green" onclick="sendEstimate()">Send Email + Telegram</button><button class="gray"
+          onclick="copyClientEstimate()">Copy Client Estimate</button><button class="gray" onclick="window.print()">Save
+          / Print PDF</button></div>
+      <div class="card estimate-controls">
+        <div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div>
+        <div id="estimateEdit" class="content" style="display:block">
+          <div id="editableItems"></div>
+          <div class="client-grid" style="margin-top:12px">
+            <div><label>Discount Type</label><select id="discountType" onchange="refreshEstimatePage()">
+                <option value="none">None</option>
+                <option value="fixed">Fixed Amount</option>
+                <option value="percent">Percentage</option>
+              </select></div>
+            <div><label>Discount Value</label><input type="number" id="discountValue" value="0"
+                oninput="refreshEstimatePage()"></div>
+          </div><label>Internal Notes - Not Shown To Client</label><textarea id="internalNotes"
+            placeholder="Internal notes"></textarea>
+          <div class="note">Editable prices and internal notes are for you only. Client version shows service, volume,
+            and final cost.</div>
+        </div>
+      </div>
+      <div id="estimatePreview" class="estimate-box"></div>
+    </div>
+  </div>
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzB-iThGoHZxGyLIKoenFm-44Me-FJhtDITWLlfOauLmMInJ42TBygLf35QNPekL_sl/exec";
+    const sections = [
+      { id: "painting", title: "🎨 Painting", minimum: 0, items: [["Interior Painting - Walls & Ceilings", "Покраска дома: стены + потолки", "SF", 2.50, 3.00, 4.00], ["Interior Painting - Walls Only", "Покраска дома: только стены", "SF", 1.50, 2.00, 3.00], ["Interior Painting - Ceilings Only", "Покраска дома: только потолки", "SF", 1.00, 1.50, 2.00], ["Extra Coat / Primer", "3-й слой / праймер", "SF", 0.75, 1.00, 2.00], ["Interior Door Painting", "Покраска двери", "Each", 100, 120, 150], ["Door Frame Painting", "Покраска дверной коробки", "Each", 40, 60, 100], ["Window Sill Painting", "Покраска подоконника", "Each", 25, 30, 50], ["Window Sill Repair + Painting", "Ремонт + покраска подоконника", "Each", 50, 85, 125], ["Shelf Painting", "Покраска полки", "Each", 25, 30, 50], ["Shelf Repair + Painting", "Ремонт + покраска полки", "Each", 50, 85, 125], ["Moderate Wall Repairs Add-on", "Ремонт стен перед покраской +10%", "% of painting base", 0, 10, 10, "sectionPercent"], ["Heavy Wall Repairs Add-on", "Серьезная подготовка стен +20%", "% of painting base", 0, 20, 20, "sectionPercent"]] },
+      { id: "exterior", title: "🏠 Exterior Painting", items: [["Partial Brick / Partial Siding House", "Дом частично кирпич / частично сайдинг", "Project", 2500, 4000, 6000], ["Full Siding House", "Дом полностью из сайдинга", "Project", 3500, 5000, 7000], ["Two-Story Add-on", "Доплата за второй этаж", "% of exterior base", 15, 20, 30, "sectionPercent"], ["Second Color Add-on", "Доплата за второй цвет / trim color", "% of exterior base", 15, 20, 30, "sectionPercent"], ["Brick Painting Add-on", "Доплата за покраску кирпича", "% of exterior base", 20, 35, 50, "sectionPercent"], ["Foundation Painting", "Покраска фундамента", "Project", 300, 600, 1200], ["Downspout Painting", "Покраска сливной трубы", "Each", 80, 120, 150], ["Exterior Repair Area", "Ремонт наружного участка", "Each", 100, 150, 250]] },
+      { id: "cabinets", title: "🍽 Cabinet Painting", items: [["Cabinet Doors", "Дверцы шкафов", "Each", 60, 90, 135], ["Drawers", "Ящики", "Each", 50, 70, 110], ["Cabinet Frames", "Фреймы шкафов", "% of cabinet base", 25, 30, 40, "sectionPercent"], ["Sanding Add-on", "Шлифовка шкафов", "% of cabinet base", 10, 15, 25, "sectionPercent"], ["Caulking / Sealing Add-on", "Герметик / caulking", "% of cabinet base", 5, 10, 15, "sectionPercent"], ["Cabinet / Drawer Repair", "Ремонт фасадов / ящиков / шпаклевка", "Each", 25, 50, 100]] },
+      { id: "drywall", title: "🧱 Drywall", minimum: 200, items: [["Small Drywall Repair", "Небольшой ремонт отверстия", "Each", 150, 200, 300, "discount"], ["Medium Drywall Repair up to 2×2 ft", "Средний ремонт до 2×2 ft", "Each", 250, 400, 600, "discount"], ["Leak Damage Drywall Repair", "Ремонт после протечки", "Each", 400, 600, 800, "discount"], ["Tape Repair - 10 LF Section", "Замена ленты, участок 10 LF", "Section", 400, 600, 800], ["Skim Coat - 1 Coat", "Skim coat, 1 слой", "SF", 2, 3, 4], ["Skim Coat / Level 5 - 2 Coats", "Skim coat / Level 5, 2 слоя", "SF", 4, 6, 8]] },
+      { id: "flooring", title: "🪵 Flooring", minimum: 350, items: [["LVP Installation", "Укладка LVP / винила", "SF", 2, 2.75, 3.5], ["Laminate Installation", "Укладка ламината", "SF", 2.5, 3.25, 4], ["Engineered Hardwood - Floating", "Инженерная доска, плавающая", "SF", 3, 3.75, 4.5], ["Engineered Hardwood - Glue Down", "Инженерная доска на клей", "SF", 6, 7, 9], ["LVP / Laminate Stairs", "Ступени LVP / ламинат", "Step", 75, 100, 150], ["Engineered Hardwood Stairs", "Ступени инженерная доска", "Step", 100, 175, 300], ["Carpet Removal", "Демонтаж ковра", "SF", 0.25, 0.45, 0.75], ["LVP / Laminate Removal", "Демонтаж LVP / ламината", "SF", 0.75, 1, 1.25], ["Glued Engineered Hardwood Removal", "Демонтаж приклеенной инженерной доски", "SF", 3, 4.25, 6], ["Floor Leveling - Small Area", "Выравнивание пола, маленький участок", "Each", 200, 350, 500], ["Floor Leveling - Medium Area", "Выравнивание пола, средний участок", "Each", 500, 1000, 1500], ["Quarter Round Installation", "Установка quarter round", "LF", 1, 1.5, 2], ["Transition Strip Installation", "Установка переходного порожка", "Each", 40, 50, 80]] },
+      { id: "doors", title: "🚪 Doors & Trim", items: [["Interior Door Replacement", "Замена межкомнатной двери", "Each", 75, 120, 160], ["Prehung Door Installation", "Установка двери с коробкой", "Each", 100, 150, 200], ["Entry Door Installation", "Установка входной двери", "Each", 400, 700, 1000], ["Baseboard Installation", "Установка плинтуса", "LF", 1.5, 2.25, 3], ["Baseboard Installation + Painting", "Установка + покраска плинтуса", "LF", 4, 5, 6], ["Crown Molding Installation", "Установка crown molding", "LF", 2, 3, 4], ["Crown Molding Installation + Painting", "Установка + покраска crown molding", "LF", 4, 6, 8], ["Window Trim Installation", "Установка оконного trim", "LF", 2, 4, 6], ["Window Trim Installation + Painting", "Установка + покраска оконного trim", "LF", 4, 6, 8]] },
+      { id: "handyman", title: "🔧 Handyman", items: [["TV Mount", "Установка телевизора", "Each", 150, 200, 400], ["Wire Concealment", "Скрытие проводов", "Each", 50, 125, 200], ["Wall Shelves", "Настенные полки", "Project", 40, 80, 150], ["Mirror Installation", "Монтаж зеркала", "Each", 75, 175, 350], ["Picture / Decor Installation", "Монтаж картин / декора", "Each", 25, 40, 100], ["Ceiling Fan Installation", "Потолочный вентилятор", "Each", 125, 175, 250], ["Standard Chandelier", "Люстра стандартная", "Each", 100, 150, 250], ["High Ceiling Chandelier 18–20 ft", "Люстра 18–20 ft", "Each", 300, 450, 800], ["Light Fixture Replacement", "Замена светильника", "Each", 80, 120, 200], ["Outlet Replacement", "Замена розетки", "Each", 25, 40, 60], ["Switch Replacement", "Замена выключателя", "Each", 25, 40, 60], ["GFCI Outlet Replacement", "Замена GFCI розетки", "Each", 50, 75, 100], ["Dimmer Switch Replacement", "Замена диммера", "Each", 50, 75, 100], ["Faucet Replacement", "Замена смесителя", "Each", 125, 150, 250], ["Kitchen Faucet Replacement", "Замена кухонного смесителя", "Each", 150, 250, 450], ["Toilet Replacement", "Замена унитаза", "Each", 150, 200, 350], ["Garbage Disposal Replacement", "Замена измельчителя мусора", "Each", 150, 200, 300], ["P-Trap Replacement", "Замена сифона", "Each", 100, 175, 300], ["Bidet Installation", "Установка биде", "Each", 100, 175, 300], ["Shower Head Replacement", "Замена душевой лейки", "Each", 75, 125, 200], ["Bathtub Caulking", "Герметизация ванны", "Each", 125, 225, 400], ["Shower Caulking", "Герметизация душевой", "Each", 150, 275, 500], ["Blinds Installation", "Установка жалюзи", "Window", 40, 50, 100], ["Curtain Rod Installation", "Установка карниза", "Window", 75, 125, 250], ["Window Caulking", "Герметизация окна", "Window", 75, 150, 300]] },
+      { id: "fence", title: "🏡 Fence", items: [["Wood Privacy Fence - 6 ft", "Деревянный забор 6 ft", "LF", 35, 50, 70], ["Steel Posts Add-on", "Доплата за железные столбы", "LF", 5, 10, 12], ["Top Cap & Trim", "Верхняя корона", "LF", 8, 12, 18], ["Old Fence Removal", "Демонтаж старого забора", "LF", 3, 5, 8], ["Single Gate", "Калитка", "Each", 250, 300, 500], ["Single Gate - New Frame / Complex", "Калитка сложная / новая рама", "Each", 300, 500, 700], ["Double Gate", "Двустворчатые ворота", "Each", 400, 700, 1200], ["Fence Paint / Stain - One Side", "Покраска / stain забора, одна сторона", "LF", 10, 12, 14], ["Fence Paint / Stain - Two Sides", "Покраска / stain забора, две стороны", "LF", 17.5, 21, 24.5]] },
+      { id: "deck", title: "🏡 Deck & Pergola", minimum: 250, items: [["New Wood Deck", "Новый деревянный deck", "SF", 35, 50, 70], ["New Composite Deck", "Новый composite deck", "SF", 55, 70, 100], ["Deck Wash", "Мойка deck", "SF", 0.25, 0.45, 0.75], ["Deck Stain", "Морилка deck", "SF", 1.5, 2.5, 4], ["Deck Board Replacement", "Замена досок deck", "LF", 15, 25, 45], ["Small Pergola", "Маленькая pergola", "Project", 2000, 3000, 4000], ["Medium Pergola", "Средняя pergola", "Project", 4000, 6000, 8000], ["Large Pergola", "Большая pergola", "Project", 8000, 14000, 20000]] }
+    ];
+    let currentEstimateItems = [];
+    function money(n) { return "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
+    function price(n) { return "$" + Number(n).toLocaleString(undefined, { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+    function val(level, low, work, high) { return level === "low" ? low : level === "high" ? high : work; }
+    function toggle(id) { let el = document.getElementById(id); el.style.display = el.style.display === "block" ? "none" : "block"; }
+    function drywallDiscount(qty) { if (qty >= 10) return .75; if (qty >= 6) return .80; if (qty >= 3) return .90; return 1; }
+    function safeNumFromText(txt) { return Number(String(txt).replace(/[^\d.-]/g, "")) || 0; }
+    function render() { const app = document.getElementById("app"); app.innerHTML = ""; sections.forEach(sec => { app.innerHTML += `<div class="card calculator-only"><div class="title" onclick="toggle('${sec.id}')">${sec.title}<span>+</span></div><div id="${sec.id}" class="content">${renderSection(sec)}</div></div>`; }); }
+    function renderSection(sec) { let html = `<button onclick="resetSection('${sec.id}')">Reset This Section</button><div class="row head"><div>Add</div><div>Description</div><div>Qty</div><div>Unit</div><div>Low</div><div>Working</div><div>High</div><div>Select</div><div>Calculated</div></div>`; sec.items.forEach((r, i) => html += row(sec.id, i, r)); html += `<div class="total" id="${sec.id}_total">Grand Total: $0</div>`; if (sec.id === "flooring") html += `<div class="note"><b>Assistant note:</b> Ask if client wants baseboards, quarter round, and how many transition strips are needed.</div>`; return html; }
+    function row(id, i, r) { return `<div class="row"><div><input type="checkbox" id="${id}_${i}_add"></div><div><div class="item-title">${r[0]}</div><div class="item-ru">${r[1]}</div></div><div><input type="number" id="${id}_${i}_qty" value="0" min="0" step="0.01" oninput="calcSection('${id}')"></div><div class="price">${r[2]}</div><div class="price">${price(r[3])}</div><div class="price">${price(r[4])}</div><div class="price">${price(r[5])}</div><div><select id="${id}_${i}_level" onchange="calcSection('${id}')"><option value="working">Working</option><option value="low">Low</option><option value="high">High</option></select></div><div class="sum" id="${id}_${i}_sum">$0</div></div>`; }
+    function calcSection(secId) { const sec = sections.find(s => s.id === secId); let total = 0, sectionBase = 0; sec.items.forEach((r, i) => { let qty = +document.getElementById(`${secId}_${i}_qty`).value || 0; let level = document.getElementById(`${secId}_${i}_level`).value; let rate = val(level, r[3], r[4], r[5]); let line = 0; if (r[6] === "sectionPercent") { line = qty > 0 ? sectionBase * (rate / 100) : 0; } else { if (r[6] === "discount") rate *= drywallDiscount(qty); line = qty * rate; sectionBase += line; } document.getElementById(`${secId}_${i}_sum`).innerText = money(line); total += line; }); if (sec.minimum && total > 0 && total < sec.minimum) total = sec.minimum; if (secId === "cabinets" && total > 0 && total < 1500) total = 1500; document.getElementById(`${secId}_total`).innerText = "Grand Total: " + money(total); }
+    function resetSection(id) { document.querySelectorAll(`#${id} input[type="number"]`).forEach(x => x.value = 0); document.querySelectorAll(`#${id} input[type="checkbox"]`).forEach(x => x.checked = false); document.querySelectorAll(`#${id} select`).forEach(x => x.value = "working"); calcSection(id); }
+    function resetAll() { sections.forEach(s => resetSection(s.id));["clientName", "clientPhone", "clientEmail", "projectAddress", "projectNotes", "internalNotes"].forEach(id => document.getElementById(id).value = ""); }
+    function collectItems() { let items = []; sections.forEach(sec => { sec.items.forEach((r, i) => { const add = document.getElementById(`${sec.id}_${i}_add`).checked; const qty = +document.getElementById(`${sec.id}_${i}_qty`).value || 0; const calculated = safeNumFromText(document.getElementById(`${sec.id}_${i}_sum`).innerText); if (add && qty > 0 && calculated > 0) { items.push({ section: sec.title.replace(/^[^A-Za-z]+/, ""), name: r[0], ru: r[1], qty, unit: r[2], calculated, final: calculated }); } }); }); return items; }
+    function createEstimate() { currentEstimateItems = collectItems(); if (currentEstimateItems.length === 0) { alert("Select at least one item: Add + Qty."); return; } renderEditableItems(); document.getElementById("calculatorScreen").classList.add("hidden"); document.getElementById("estimateScreen").classList.remove("hidden"); refreshEstimatePage(); window.scrollTo(0, 0); }
+    function backToCalculator() { document.getElementById("estimateScreen").classList.add("hidden"); document.getElementById("calculatorScreen").classList.remove("hidden"); window.scrollTo(0, 0); }
+    function renderEditableItems() { let html = `<div class="edit-grid head"><div>Description</div><div>Volume</div><div>Calculated</div><div>Editable Price</div></div>`; currentEstimateItems.forEach((x, i) => { html += `<div class="edit-grid"><div><b>${x.name}</b><div class="small-muted">${x.ru}</div></div><div>${x.qty} ${x.unit}</div><div>${money(x.calculated)}</div><div><input type="number" id="edit_${i}" value="${Math.round(x.final)}" oninput="refreshEstimatePage()"></div></div>`; }); document.getElementById("editableItems").innerHTML = html; }
+    function getEstimateTotals() { currentEstimateItems.forEach((x, i) => x.final = +document.getElementById(`edit_${i}`).value || 0); const subtotal = currentEstimateItems.reduce((s, x) => s + x.final, 0); const type = document.getElementById("discountType").value; const valDiscount = +document.getElementById("discountValue").value || 0; let discount = 0; if (type === "fixed") discount = valDiscount; if (type === "percent") discount = subtotal * (valDiscount / 100); return { subtotal, discount, total: Math.max(0, subtotal - discount) }; }
+    function refreshEstimatePage() { if (currentEstimateItems.length === 0) return; const t = getEstimateTotals(); const rows = currentEstimateItems.map((x, i) => `<tr><td>${i + 1}</td><td><b>${x.name}</b><br><span style="color:#666">${x.ru}</span></td><td>${x.qty} ${x.unit}</td><td class="money">${money(x.final)}</td></tr>`).join(""); document.getElementById("estimatePreview").innerHTML = `<div class="estimate-header"><div><img src="LOGO.jpg" class="estimate-logo"><h2>VAM Services LLC</h2><div>Home Repair & Remodeling</div><div>Phone: (858) 910-2956</div><div>Email: vamservicesllc.com@gmail.com</div><div>Website: vamservicesllc.com</div></div><div><div class="estimate-title">PRELIMINARY ESTIMATE</div><div>Date: ${new Date().toLocaleDateString()}</div><div>Estimate #: VAM-${Date.now().toString().slice(-6)}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px"><div><h3>Client Information</h3><div><b>Name:</b> ${document.getElementById("clientName").value || ""}</div><div><b>Phone:</b> ${document.getElementById("clientPhone").value || ""}</div><div><b>Email:</b> ${document.getElementById("clientEmail").value || ""}</div></div><div><h3>Project Information</h3><div><b>Address:</b> ${document.getElementById("projectAddress").value || ""}</div><div><b>Notes:</b> ${document.getElementById("projectNotes").value || ""}</div></div></div><table class="estimate-table"><thead><tr><th>#</th><th>Description of Work</th><th>Volume</th><th>Estimated Cost</th></tr></thead><tbody>${rows}</tbody></table><div class="summary"><div class="summary-row"><span>Subtotal</span><b>${money(t.subtotal)}</b></div>${t.discount > 0 ? `<div class="summary-row"><span>Discount</span><b style="color:green">-${money(t.discount)}</b></div>` : ""}<hr><div class="summary-row big-total"><span>Estimated Total</span><span>${money(t.total)}</span></div></div><div style="margin-top:20px"><h3>Notes</h3><ul><li>This is a preliminary estimate.</li><li>Final price may change after site inspection, measurements, and material selection.</li><li>Materials are included unless otherwise specified.</li><li>This estimate is valid for 30 days.</li></ul></div>`; }
+    function getClientText() { const t = getEstimateTotals(); let text = `VAM Services LLC\nPRELIMINARY ESTIMATE\n\nClient: ${document.getElementById("clientName").value}\nPhone: ${document.getElementById("clientPhone").value}\nEmail: ${document.getElementById("clientEmail").value}\nAddress: ${document.getElementById("projectAddress").value}\n\nScope of Work:\n`; currentEstimateItems.forEach((x, i) => { text += `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}\n`; }); text += `\nSubtotal: ${money(t.subtotal)}\n${t.discount > 0 ? `Discount: -${money(t.discount)}\n` : ""}Estimated Total: ${money(t.total)}\n\nNotes:\nThis is a preliminary estimate.\nFinal price may change after site inspection, measurements, and material selection.\nMaterials are included unless otherwise specified.\n`; return text; }
+    function copyClientEstimate() { navigator.clipboard.writeText(getClientText()); alert("Client estimate copied."); }
+    function sendEstimate() { refreshEstimatePage(); const t = getEstimateTotals(); const payload = { clientName: document.getElementById("clientName").value, clientPhone: document.getElementById("clientPhone").value, clientEmail: document.getElementById("clientEmail").value, projectAddress: document.getElementById("projectAddress").value, scopeText: currentEstimateItems.map((x, i) => `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`).join("\n"), subtotal: Math.round(t.subtotal), discount: Math.round(t.discount), total: Math.round(t.total) }; fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) }); alert("Estimate sent to email and Telegram."); }
+    render();
+  </script>
 </body>
+
 </html>
