@@ -1185,11 +1185,11 @@ function sendEstimate() {
   const t = getEstimateTotals();
 
   const payload = {
-    clientName: getValue("estimateClientName"),
-    clientPhone: getValue("estimateClientPhone"),
-    clientEmail: getValue("estimateClientEmail"),
-    projectAddress: getValue("estimateProjectAddress"),
-    projectNotes: getValue("estimateProjectNotes"),
+    clientName: getValue("clientName"),
+    clientPhone: getValue("clientPhone"),
+    clientEmail: getValue("clientEmail"),
+    projectAddress: getValue("projectAddress"),
+    projectNotes: getValue("projectNotes"),
     scopeText: currentEstimateItems
       .map((x, i) => {
         return `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`;
@@ -1201,20 +1201,15 @@ function sendEstimate() {
   };
 
   fetch(WEB_APP_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain"
-  },
-  body: JSON.stringify(payload)
-})
-  .then(() => {
-    console.log(payload);
-    alert("Estimate sent. Check email and Telegram.");
-})
-  .catch((error) => {
-    alert("Send failed. Check WEB_APP_URL and deployment.");
-    console.error(error);
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: JSON.stringify(payload)
   });
+
+  alert("Estimate sent. Check email and Telegram.");
 }
 
     function escapeHtml(value) {
