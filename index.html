@@ -265,6 +265,16 @@
       border-top: 1px solid var(--line);
       padding: 10px 0
     }
+    
+    input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 
     .small-muted {
       font-size: 12px;
@@ -581,11 +591,12 @@
       </div>
     </div>
     <div id="estimateScreen" class="hidden">
-      <div class="top-buttons estimate-controls"><button class="gray" onclick="backToCalculator()">Back to
-          Calculator</button><button class="gold" onclick="refreshEstimatePage()">Update Estimate</button><button
-          class="green" onclick="sendEstimate()">Send Email + Telegram</button><button class="gray"
-          onclick="copyClientEstimate()">Copy Client Estimate</button><button class="gray" onclick="window.print()">Save
-          / Print PDF</button></div>
+     <div class="top-buttons estimate-controls">
+  <button class="gray" onclick="backToCalculator()">Back to Calculator</button>
+  <button class="green" onclick="sendEstimate()">Send Email + Telegram</button>
+  <button class="gray" onclick="saveEstimate()">Save Estimate</button>
+  <button class="gray" onclick="window.print()">Print</button>
+</div>
       <div class="card estimate-controls">
         <div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div>
         <div id="estimateEdit" class="content" style="display:block">
@@ -1122,6 +1133,42 @@ Subtotal: ${money(t.subtotal)}
     function getValue(id) {
   const el = document.getElementById(id);
   return el ? el.value : "";
+}
+
+    function saveEstimate() {
+  refreshEstimatePage();
+
+  const estimateContent =
+    document.getElementById("estimatePreview").innerHTML;
+
+  const fullHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VAM Services Estimate</title>
+</head>
+<body>
+${estimateContent}
+</body>
+</html>
+`;
+
+  const blob = new Blob(
+    [fullHtml],
+    { type: "text/html" }
+  );
+
+  const link = document.createElement("a");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = "VAM-Services-Estimate.html";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(link.href);
 }
 
 function sendEstimate() {
