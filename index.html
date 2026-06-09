@@ -1122,18 +1122,21 @@ Subtotal: ${money(t.subtotal)}
     function sendEstimate() {
       refreshEstimatePage();
 
-      const t = getEstimateTotals();
-
       const payload = {
-        clientName: document.getElementById("clientName").value,
-        clientPhone: document.getElementById("clientPhone").value,
-        clientEmail: document.getElementById("clientEmail").value,
-        projectAddress: document.getElementById("projectAddress").value,
-        scopeText: currentEstimateItems.map((x, i) => `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`).join("\n"),
-        subtotal: Math.round(t.subtotal),
-        discount: Math.round(t.discount),
-        total: Math.round(t.total)
-      };
+  clientName: document.getElementById("estimateClientName").value,
+  clientPhone: document.getElementById("estimateClientPhone").value,
+  clientEmail: document.getElementById("estimateClientEmail").value,
+  projectAddress: document.getElementById("estimateProjectAddress").value,
+  projectNotes: document.getElementById("estimateProjectNotes").value,
+  scopeText: currentEstimateItems
+    .map((x, i) => {
+      return `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`;
+    })
+    .join("\n"),
+  subtotal: Math.round(t.subtotal),
+  discount: Math.round(t.discount),
+  total: Math.round(t.total)
+};
 
       fetch(WEB_APP_URL, {
         method: "POST",
