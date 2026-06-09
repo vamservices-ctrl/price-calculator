@@ -730,13 +730,10 @@ input[type="number"] {
 
           <div>
            <input
-  type="number"
-  id="${id}_${i}_qty"
-  value=""
-  min="0"
-  step="1"
-  onwheel="this.blur()"
-  oninput="calcSection('${id}')"
+    type="text"
+    id="${id}_${i}_qty"
+    value=""
+    oninput="this.value=this.value.replace(/[^0-9]/g,''); calcSection('${id}')"
 >
           </div>
 
