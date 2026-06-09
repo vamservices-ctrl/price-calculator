@@ -644,7 +644,14 @@ input[type="number"] {
 
               <div>
                 <label>Discount Value</label>
-                <input type="number" id="discountValue" value="0" oninput="refreshEstimatePage()">
+                <input
+  type="number"
+  min="0"
+  step="1"
+  id="edit_${i}_qty"
+  value="${Math.round(x.qty)}"
+  oninput="this.value = Math.floor(this.value || 0); refreshEstimatePage()"
+>
               </div>
             </div>
           </div>
