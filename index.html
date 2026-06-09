@@ -1214,8 +1214,9 @@ function sendEstimate() {
   body: JSON.stringify(payload)
 })
   .then(() => {
+    console.log(payload);
     alert("Estimate sent. Check email and Telegram.");
-  })
+})
   .catch((error) => {
     alert("Send failed. Check WEB_APP_URL and deployment.");
     console.error(error);
