@@ -1119,36 +1119,43 @@ Subtotal: ${money(t.subtotal)}
       alert("Client estimate copied.");
     }
 
-    function sendEstimate() {
-      refreshEstimatePage();
+    function getValue(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : "";
+}
 
-      const payload = {
-  clientName: document.getElementById("estimateClientName").value,
-  clientPhone: document.getElementById("estimateClientPhone").value,
-  clientEmail: document.getElementById("estimateClientEmail").value,
-  projectAddress: document.getElementById("estimateProjectAddress").value,
-  projectNotes: document.getElementById("estimateProjectNotes").value,
-  scopeText: currentEstimateItems
-    .map((x, i) => {
-      return `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`;
-    })
-    .join("\n"),
-  subtotal: Math.round(t.subtotal),
-  discount: Math.round(t.discount),
-  total: Math.round(t.total)
-};
+function sendEstimate() {
+  refreshEstimatePage();
 
-      fetch(WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain"
-        },
-        body: JSON.stringify(payload)
-      });
+  const t = getEstimateTotals();
 
-      alert("Estimate sent to email and Telegram.");
-    }
+  const payload = {
+    clientName: getValue("estimateClientName"),
+    clientPhone: getValue("estimateClientPhone"),
+    clientEmail: getValue("estimateClientEmail"),
+    projectAddress: getValue("estimateProjectAddress"),
+    projectNotes: getValue("estimateProjectNotes"),
+    scopeText: currentEstimateItems
+      .map((x, i) => {
+        return `${i + 1}. ${x.name} (${x.qty} ${x.unit}) - ${money(x.final)}`;
+      })
+      .join("\n"),
+    subtotal: Math.round(t.subtotal),
+    discount: Math.round(t.discount),
+    total: Math.round(t.total)
+  };
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  alert("Estimate sent. Check email and Telegram.");
+}
 
     function escapeHtml(value) {
       return String(value)
