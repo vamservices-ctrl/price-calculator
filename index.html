@@ -645,12 +645,15 @@ input[type="number"] {
               <div>
                 <label>Discount Value</label>
                 <input
-  type="number"
-  min="0"
-  step="1"
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]*"
   id="edit_${i}_qty"
-  value="${Math.round(x.qty)}"
-  oninput="this.value = Math.floor(this.value || 0); refreshEstimatePage()"
+  value="${parseInt(x.qty, 10) || 0}"
+  oninput="
+    this.value = this.value.replace(/[^0-9]/g, '');
+    refreshEstimatePage();
+  "
 >
               </div>
             </div>
