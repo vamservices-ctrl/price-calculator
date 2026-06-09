@@ -594,7 +594,7 @@ input[type="number"] {
      <div class="top-buttons estimate-controls">
   <button class="gray" onclick="backToCalculator()">Back to Calculator</button>
   <button class="green" onclick="sendEstimate()">Send Email + Telegram</button>
-  <button class="gray" onclick="window.print()">Print</button>
+  <button class="gray" onclick="printEstimate()">Print</button>
 </div>
       <div class="card estimate-controls">
         <div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div>
@@ -1211,7 +1211,80 @@ function sendEstimate() {
 
   alert("Estimate sent. Check email and Telegram.");
 }
+function printEstimate() {
+  refreshEstimatePage();
 
+  const estimateHtml =
+    document.getElementById("estimatePreview").innerHTML;
+
+  const printWindow = window.open("", "_blank");
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VAM Services Estimate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      color: #111827;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #111827;
+      color: white;
+      padding: 10px;
+      text-align: left;
+    }
+
+    td {
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    .money {
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .summary {
+      margin-top: 20px;
+      max-width: 420px;
+      margin-left: auto;
+      border: 1px solid #ddd;
+      padding: 14px;
+    }
+
+    .big-total {
+      font-size: 24px;
+      color: #b8862b;
+      font-weight: 900;
+    }
+
+    img {
+      max-width: 90px;
+    }
+  </style>
+</head>
+<body>
+  ${estimateHtml}
+</body>
+</html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+
+  setTimeout(() => {
+    printWindow.print();
+  }, 500);
+}
     function escapeHtml(value) {
       return String(value)
         .replaceAll("&", "&amp;")
