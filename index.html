@@ -649,7 +649,7 @@ input[type="number"] {
   inputmode="numeric"
   pattern="[0-9]*"
   id="edit_${i}_qty"
-  value="${parseInt(x.qty, 10) || 0}"
+  value="0"
   oninput="
     this.value = this.value.replace(/[^0-9]/g, '');
     refreshEstimatePage();
