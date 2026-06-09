@@ -645,15 +645,10 @@ input[type="number"] {
               <div>
                 <label>Discount Value</label>
                 <input
-  type="text"
-  inputmode="numeric"
-  pattern="[0-9]*"
-  id="edit_${i}_qty"
+  type="number"
+  id="discountValue"
   value="0"
-  oninput="
-    this.value = this.value.replace(/[^0-9]/g, '');
-    refreshEstimatePage();
-  "
+  oninput="refreshEstimatePage()"
 >
               </div>
             </div>
