@@ -682,6 +682,9 @@ input[type="number"] {
     function toggle(id) { let el = document.getElementById(id); el.style.display = el.style.display === "block" ? "none" : "block"; }
     function drywallDiscount(qty) { if (qty >= 10) return .75; if (qty >= 6) return .80; if (qty >= 3) return .90; return 1; }
     function safeNumFromText(txt) { return Number(String(txt).replace(/[^\d.-]/g, "")) || 0; }
+    function parsePriceInput(value) {
+  return Number(String(value).replace(",", ".")) || 0;
+}
     function render() { const app = document.getElementById("app"); app.innerHTML = ""; sections.forEach(sec => { app.innerHTML += `<div class="card calculator-only"><div class="title" onclick="toggle('${sec.id}')">${sec.title}<span>+</span></div><div id="${sec.id}" class="content">${renderSection(sec)}</div></div>`; }); }
     function renderSection(sec) {
       let html = `
@@ -875,11 +878,15 @@ input[type="number"] {
         html += `
           <div class="edit-grid">
             <div>
-              <input
-                type="text"
-                value="${escapeHtml(x.name)}"
-                oninput="currentEstimateItems[${i}].name = this.value; refreshEstimatePage();"
-              >
+             <input
+  type="text"
+  value="${roundMoneyInput(x.unitPrice)}"
+  oninput="
+    this.value = this.value.replace(/[^0-9.,]/g, '');
+    currentEstimateItems[${i}].unitPrice = parsePriceInput(this.value);
+    refreshEstimatePage();
+  "
+>
               <div class="small-muted">${escapeHtml(x.ru || "")}</div>
             </div>
 
@@ -900,11 +907,15 @@ input[type="number"] {
             </div>
 
             <div>
-              <input
-                type="text"
-                value="${escapeHtml(x.unit)}"
-                oninput="currentEstimateItems[${i}].unit = this.value; refreshEstimatePage();"
-              >
+              <select
+  onchange="currentEstimateItems[${i}].unit = this.value; refreshEstimatePage();"
+>
+  <option value="Project" ${x.unit === "Project" ? "selected" : ""}>Project</option>
+  <option value="SF" ${x.unit === "SF" ? "selected" : ""}>SF</option>
+  <option value="LF" ${x.unit === "LF" ? "selected" : ""}>LF</option>
+  <option value="Each" ${x.unit === "Each" ? "selected" : ""}>Each</option>
+  <option value="Step" ${x.unit === "Step" ? "selected" : ""}>Step</option>
+</select>
             </div>
 
             <div>
@@ -956,7 +967,7 @@ input[type="number"] {
     function getEstimateTotals() {
       currentEstimateItems.forEach((x, i) => {
         x.qty = parseInt(x.qty, 10) || 0;
-        x.unitPrice = Number(x.unitPrice) || 0;
+        x.unitPrice = parsePriceInput(x.unitPrice);
         x.final = x.qty * x.unitPrice;
 
         const totalCell = document.getElementById(`line_total_${i}`);
