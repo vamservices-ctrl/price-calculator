@@ -292,6 +292,11 @@ input[type="number"] {
       font-size: 18px;
     }
 
+    .estimate-notice {
+      white-space: pre-line;
+      line-height: 1.55;
+    }
+
     .delete-btn {
       background: #991b1b;
       padding: 9px 10px;
@@ -581,7 +586,7 @@ input[type="number"] {
         <div>
           <h1>VAM Services Price Calculator</h1>
           <p>Home Repair & Remodeling</p>
-          <p>Internal calculator + preliminary estimate generator</p>
+          <p>Internal calculator + estimate generator</p>
         </div>
       </div>
       <div id="app"></div>
@@ -594,6 +599,7 @@ input[type="number"] {
      <div class="top-buttons estimate-controls">
   <button class="gray" onclick="backToCalculator()">Back to Calculator</button>
   <button class="green" onclick="sendEstimate()">Send Email + Telegram</button>
+  <button id="savePdfButton" class="gold" onclick="saveEstimate()">Save as PDF</button>
   <button class="gray" onclick="printEstimate()">Print</button>
 </div>
       <div class="card estimate-controls">
@@ -654,6 +660,14 @@ input[type="number"] {
             </div>
           </div>
 
+          <div class="estimate-editor-section">
+            <h3>Client Notice</h3>
+            <textarea id="estimateNotice" oninput="refreshEstimatePage()">Materials are included unless otherwise specified.
+This estimate is valid for 30 days.
+Additional work or changes require written approval and may affect the total.</textarea>
+            <div class="note">This notice appears on the estimate and in the downloaded PDF. You can edit or remove it.</div>
+          </div>
+
           <label>Internal Notes - Not Shown To Client</label>
           <textarea id="internalNotes" placeholder="Internal notes"></textarea>
           <div class="note">Editable prices and internal notes are for you only. Client version shows service, volume, and final cost.</div>
@@ -662,6 +676,7 @@ input[type="number"] {
       <div id="estimatePreview" class="estimate-box"></div>
     </div>
   </div>
+  <script src="html2pdf.bundle.min.js"></script>
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzB-iThGoHZxGyLIKoenFm-44Me-FJhtDITWLlfOauLmMInJ42TBygLf35QNPekL_sl/exec";
     const sections = [
@@ -1025,7 +1040,7 @@ function renderEditableItems() {
           </div>
 
           <div>
-            <div class="estimate-title">PRELIMINARY ESTIMATE</div>
+            <div class="estimate-title">ESTIMATE</div>
             <div>Date: ${new Date().toLocaleDateString()}</div>
             <div>Estimate #: Not sent yet</div>
           </div>
@@ -1052,7 +1067,7 @@ function renderEditableItems() {
               <th>#</th>
               <th>Description of Work</th>
               <th>Volume</th>
-              <th>Estimated Cost</th>
+              <th>Cost</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -1074,20 +1089,17 @@ function renderEditableItems() {
           <hr>
 
           <div class="summary-row big-total">
-            <span>Estimated Total</span>
+            <span>Total</span>
             <span>${money(t.total)}</span>
           </div>
         </div>
 
-        <div style="margin-top:20px">
-          <h3>Notes</h3>
-          <ul>
-            <li>This is a preliminary estimate.</li>
-            <li>Final price may change after site inspection, measurements, and material selection.</li>
-            <li>Materials are included unless otherwise specified.</li>
-            <li>This estimate is valid for 30 days.</li>
-          </ul>
-        </div>
+        ${document.getElementById("estimateNotice").value.trim() ? `
+          <div style="margin-top:20px">
+            <h3>Notice</h3>
+            <div class="estimate-notice">${escapeHtml(document.getElementById("estimateNotice").value.trim())}</div>
+          </div>
+        ` : ""}
       `;
     }
 
@@ -1095,7 +1107,7 @@ function renderEditableItems() {
       const t = getEstimateTotals();
 
       let text = `VAM Services LLC
-PRELIMINARY ESTIMATE
+ESTIMATE
 
 `;
       text += `Client: ${document.getElementById("clientName").value}
@@ -1124,17 +1136,16 @@ Subtotal: ${money(t.subtotal)}
 `;
       }
 
-      text += `Estimated Total: ${money(t.total)}
+      text += `Total: ${money(t.total)}
 
 `;
-      text += `Notes:
+      const notice = document.getElementById("estimateNotice").value.trim();
+
+      if (notice) {
+        text += `Notice:
+${notice}
 `;
-      text += `This is a preliminary estimate.
-`;
-      text += `Final price may change after site inspection, measurements, and material selection.
-`;
-      text += `Materials are included unless otherwise specified.
-`;
+      }
 
       return text;
     }
@@ -1149,41 +1160,57 @@ Subtotal: ${money(t.subtotal)}
   return el ? el.value : "";
 }
 
-    function saveEstimate() {
-  refreshEstimatePage();
+    async function saveEstimate() {
+      refreshEstimatePage();
 
-  const estimateContent =
-    document.getElementById("estimatePreview").innerHTML;
+      if (typeof html2pdf === "undefined") {
+        alert("PDF generator could not be loaded. Check your internet connection and try again.");
+        return;
+      }
 
-  const fullHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>VAM Services Estimate</title>
-</head>
-<body>
-${estimateContent}
-</body>
-</html>
-`;
+      const button = document.getElementById("savePdfButton");
+      const originalButtonText = button.textContent;
+      button.disabled = true;
+      button.textContent = "Creating PDF...";
 
-  const blob = new Blob(
-    [fullHtml],
-    { type: "text/html" }
-  );
+      const clientName = getValue("clientName").trim();
+      const safeClientName = clientName
+        ? clientName.replace(/[^a-z0-9_-]+/gi, "-").replace(/^-+|-+$/g, "")
+        : "Client";
+      const date = new Date().toISOString().slice(0, 10);
+      const filename = `VAM-Services-Estimate-${safeClientName}-${date}.pdf`;
+      const estimateElement = document.getElementById("estimatePreview");
 
-  const link = document.createElement("a");
+      try {
+        const pdfBlob = await html2pdf().set({
+          margin: [0.35, 0.35, 0.35, 0.35],
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".summary", ".estimate-header"] }
+        }).from(estimateElement).outputPdf("blob");
 
-  link.href = URL.createObjectURL(blob);
-  link.download = "VAM-Services-Estimate.html";
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pdfUrl;
+        downloadLink.download = filename;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(link.href);
-}
+        button.textContent = "PDF Downloaded";
+      } catch (error) {
+        console.error("PDF download failed:", error);
+        alert("PDF could not be created. Please try again.");
+      } finally {
+        setTimeout(() => {
+          button.disabled = false;
+          button.textContent = originalButtonText;
+        }, 1500);
+      }
+    }
 
 function sendEstimate() {
   refreshEstimatePage();
