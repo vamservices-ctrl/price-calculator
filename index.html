@@ -599,7 +599,7 @@ input[type="number"] {
      <div class="top-buttons estimate-controls">
   <button class="gray" onclick="backToCalculator()">Back to Calculator</button>
   <button class="green" onclick="sendEstimate()">Send Email + Telegram</button>
-  <button class="gold" onclick="saveEstimate()">Save as PDF</button>
+  <button id="savePdfButton" class="gold" onclick="saveEstimate()">Save as PDF</button>
   <button class="gray" onclick="printEstimate()">Print</button>
 </div>
       <div class="card estimate-controls">
@@ -676,7 +676,7 @@ Additional work or changes require written approval and may affect the total.</t
       <div id="estimatePreview" class="estimate-box"></div>
     </div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="html2pdf.bundle.min.js"></script>
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzB-iThGoHZxGyLIKoenFm-44Me-FJhtDITWLlfOauLmMInJ42TBygLf35QNPekL_sl/exec";
     const sections = [
@@ -1160,13 +1160,18 @@ ${notice}
   return el ? el.value : "";
 }
 
-    function saveEstimate() {
+    async function saveEstimate() {
       refreshEstimatePage();
 
       if (typeof html2pdf === "undefined") {
         alert("PDF generator could not be loaded. Check your internet connection and try again.");
         return;
       }
+
+      const button = document.getElementById("savePdfButton");
+      const originalButtonText = button.textContent;
+      button.disabled = true;
+      button.textContent = "Creating PDF...";
 
       const clientName = getValue("clientName").trim();
       const safeClientName = clientName
@@ -1176,14 +1181,35 @@ ${notice}
       const filename = `VAM-Services-Estimate-${safeClientName}-${date}.pdf`;
       const estimateElement = document.getElementById("estimatePreview");
 
-      html2pdf().set({
-        margin: [0.35, 0.35, 0.35, 0.35],
-        filename,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".summary", ".estimate-header"] }
-      }).from(estimateElement).save();
+      try {
+        const pdfBlob = await html2pdf().set({
+          margin: [0.35, 0.35, 0.35, 0.35],
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"], avoid: ["tr", ".summary", ".estimate-header"] }
+        }).from(estimateElement).outputPdf("blob");
+
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pdfUrl;
+        downloadLink.download = filename;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
+
+        button.textContent = "PDF Downloaded";
+      } catch (error) {
+        console.error("PDF download failed:", error);
+        alert("PDF could not be created. Please try again.");
+      } finally {
+        setTimeout(() => {
+          button.disabled = false;
+          button.textContent = originalButtonText;
+        }, 1500);
+      }
     }
 
 function sendEstimate() {
