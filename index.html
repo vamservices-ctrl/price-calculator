@@ -292,6 +292,19 @@ input[type="number"] {
       font-size: 18px;
     }
 
+    .client-section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .client-section-heading h3,
+    .client-section-heading button {
+      margin: 0;
+    }
+
     .estimate-notice {
       white-space: pre-line;
       line-height: 1.55;
@@ -606,28 +619,32 @@ input[type="number"] {
         <div class="title" onclick="toggle('estimateEdit')">✏️ Estimate Editing / Discount <span>+</span></div>
         <div id="estimateEdit" class="content" style="display:block">
           <div class="estimate-editor-section">
-            <h3>Client Information</h3>
+            <div class="client-section-heading">
+              <h3>Client Information</h3>
+              <button class="delete-btn" onclick="clearClientData()">Clear Client Data</button>
+            </div>
             <div class="client-grid">
               <div>
                 <label>Client Name</label>
-                <input id="clientName" placeholder="Client name" oninput="refreshEstimatePage()">
+                <input type="text" id="clientName" autocomplete="name" placeholder="Client name" oninput="saveClientData(); refreshEstimatePage()">
               </div>
               <div>
                 <label>Phone</label>
-                <input id="clientPhone" placeholder="Phone" oninput="refreshEstimatePage()">
+                <input type="tel" id="clientPhone" autocomplete="tel" placeholder="Phone" oninput="saveClientData(); refreshEstimatePage()">
               </div>
               <div>
                 <label>Email</label>
-                <input id="clientEmail" placeholder="Client email" oninput="refreshEstimatePage()">
+                <input type="email" id="clientEmail" autocomplete="email" placeholder="Client email" oninput="saveClientData(); refreshEstimatePage()">
               </div>
               <div>
                 <label>Project Address</label>
-                <input id="projectAddress" placeholder="Project address" oninput="refreshEstimatePage()">
+                <input type="text" id="projectAddress" autocomplete="street-address" placeholder="Project address" oninput="saveClientData(); refreshEstimatePage()">
               </div>
             </div>
 
             <label>Project Notes</label>
             <textarea id="projectNotes" placeholder="Project notes" oninput="refreshEstimatePage()"></textarea>
+            <div class="note">Client information is saved automatically. Use Clear Client Data when starting an estimate for a new client.</div>
           </div>
 
           <div class="estimate-editor-section">
@@ -691,6 +708,86 @@ Additional work or changes require written approval and may affect the total.</t
       { id: "deck", title: "🏡 Deck & Pergola", minimum: 250, items: [["New Wood Deck", "Новый деревянный deck", "SF", 35, 50, 70], ["New Composite Deck", "Новый composite deck", "SF", 55, 70, 100], ["Deck Wash", "Мойка deck", "SF", 0.25, 0.45, 0.75], ["Deck Stain", "Морилка deck", "SF", 1.5, 2.5, 4], ["Deck Board Replacement", "Замена досок deck", "LF", 15, 25, 45], ["Small Pergola", "Маленькая pergola", "Project", 2000, 3000, 4000], ["Medium Pergola", "Средняя pergola", "Project", 4000, 6000, 8000], ["Large Pergola", "Большая pergola", "Project", 8000, 14000, 20000]] }
     ];
     let currentEstimateItems = [];
+    let currentEstimateDate = "";
+    let currentEstimateNumber = "";
+    const sessionEstimateCounters = {};
+    const CLIENT_DATA_STORAGE_KEY = "vam-last-client-data";
+
+    function saveClientData() {
+      const clientData = {
+        clientName: document.getElementById("clientName").value,
+        clientPhone: document.getElementById("clientPhone").value,
+        clientEmail: document.getElementById("clientEmail").value,
+        projectAddress: document.getElementById("projectAddress").value
+      };
+
+      try {
+        localStorage.setItem(CLIENT_DATA_STORAGE_KEY, JSON.stringify(clientData));
+      } catch (error) {
+        console.warn("Client data could not be saved.", error);
+      }
+    }
+
+    function restoreClientData() {
+      try {
+        const savedClientData = JSON.parse(localStorage.getItem(CLIENT_DATA_STORAGE_KEY) || "null");
+
+        if (!savedClientData) return;
+
+        ["clientName", "clientPhone", "clientEmail", "projectAddress"].forEach(id => {
+          const element = document.getElementById(id);
+          if (element) element.value = savedClientData[id] || "";
+        });
+      } catch (error) {
+        console.warn("Client data could not be restored.", error);
+      }
+    }
+
+    function clearClientData() {
+      ["clientName", "clientPhone", "clientEmail", "projectAddress", "projectNotes"].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.value = "";
+      });
+
+      try {
+        localStorage.removeItem(CLIENT_DATA_STORAGE_KEY);
+      } catch (error) {
+        console.warn("Saved client data could not be cleared.", error);
+      }
+
+      refreshEstimatePage();
+    }
+
+    function getEstimateDateParts(date = new Date()) {
+      return {
+        year: String(date.getFullYear()),
+        month: String(date.getMonth() + 1).padStart(2, "0"),
+        day: String(date.getDate()).padStart(2, "0")
+      };
+    }
+
+    function createEstimateIdentity() {
+      const { year, month, day } = getEstimateDateParts();
+      const dateKey = `${year}-${month}-${day}`;
+      const storageKey = `vam-estimate-counter-${dateKey}`;
+      let sequence = sessionEstimateCounters[dateKey] || 0;
+
+      try {
+        sequence = parseInt(localStorage.getItem(storageKey) || "0", 10) || 0;
+        sequence += 1;
+        localStorage.setItem(storageKey, String(sequence));
+      } catch (error) {
+        sequence += 1;
+      }
+
+      sessionEstimateCounters[dateKey] = sequence;
+
+      return {
+        date: `${month}/${day}/${year}`,
+        number: `${month}${day}${year}-${String(sequence).padStart(3, "0")}`
+      };
+    }
+
     function money(n) { return "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 }); }
     function price(n) { return "$" + Number(n).toLocaleString(undefined, { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
     function val(level, low, work, high) { return level === "low" ? low : level === "high" ? high : work; }
@@ -862,6 +959,11 @@ Additional work or changes require written approval and may affect the total.</t
         return;
       }
 
+      const estimateIdentity = createEstimateIdentity();
+      currentEstimateDate = estimateIdentity.date;
+      currentEstimateNumber = estimateIdentity.number;
+      restoreClientData();
+
       renderEditableItems();
 
       document.getElementById("calculatorScreen").classList.add("hidden");
@@ -872,6 +974,7 @@ Additional work or changes require written approval and may affect the total.</t
     }
 
     function backToCalculator() {
+      saveClientData();
       document.getElementById("estimateScreen").classList.add("hidden");
       document.getElementById("calculatorScreen").classList.remove("hidden");
       window.scrollTo(0, 0);
@@ -1021,7 +1124,6 @@ function renderEditableItems() {
           <td>${i + 1}</td>
           <td>
             <b>${escapeHtml(x.name)}</b>
-            ${x.ru ? `<br><span style="color:#666">${escapeHtml(x.ru)}</span>` : ""}
           </td>
           <td>${x.qty} ${escapeHtml(x.unit)}</td>
           <td class="money">${money(x.final)}</td>
@@ -1041,8 +1143,8 @@ function renderEditableItems() {
 
           <div>
             <div class="estimate-title">ESTIMATE</div>
-            <div>Date: ${new Date().toLocaleDateString()}</div>
-            <div>Estimate #: Not sent yet</div>
+            <div>Date: ${currentEstimateDate}</div>
+            <div>Estimate #: ${currentEstimateNumber}</div>
           </div>
         </div>
 
@@ -1108,6 +1210,11 @@ function renderEditableItems() {
 
       let text = `VAM Services LLC
 ESTIMATE
+
+`;
+      text += `Date: ${currentEstimateDate}
+`;
+      text += `Estimate #: ${currentEstimateNumber}
 
 `;
       text += `Client: ${document.getElementById("clientName").value}
@@ -1177,8 +1284,7 @@ ${notice}
       const safeClientName = clientName
         ? clientName.replace(/[^a-z0-9_-]+/gi, "-").replace(/^-+|-+$/g, "")
         : "Client";
-      const date = new Date().toISOString().slice(0, 10);
-      const filename = `VAM-Services-Estimate-${safeClientName}-${date}.pdf`;
+      const filename = `VAM-Services-Estimate-${currentEstimateNumber}-${safeClientName}.pdf`;
       const estimateElement = document.getElementById("estimatePreview");
 
       try {
@@ -1218,6 +1324,8 @@ function sendEstimate() {
   const t = getEstimateTotals();
 
   const payload = {
+    estimateDate: currentEstimateDate,
+    estimateNumber: currentEstimateNumber,
     clientName: getValue("clientName"),
     clientPhone: getValue("clientPhone"),
     clientEmail: getValue("clientEmail"),
@@ -1332,6 +1440,7 @@ function printEstimate() {
     }
 
     render();
+    restoreClientData();
   </script>
 </body>
 
